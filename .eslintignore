@@ -12,3 +12,5 @@ output.js
 /src/plugins/debug.js
 
 *.d.ts
+
+/Users/daniilchumachenko/WebServer/DEMOCRANCE/DMC_OPEN_SOURCE/MAPS-DUBIZZLE-BUEFY/src/utils/originalPA.js
