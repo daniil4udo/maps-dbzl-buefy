@@ -2,14 +2,19 @@ export interface ILatLng {
     lat: null | string | number;
     lng: null | string | number;
 }
+export type TLatLnh = [ string | number, string | number]
+
+export type EmirateKey = 'dubai' | 'ajman' | 'sharjah' | 'ummalquawain' | 'alain' | 'fujairah' | 'abudhabi' | 'rasalkhaimah'
+export type EmirateName = 'Dubai' | 'Ajman' | 'Sharjah' | 'Umm Al Quawain' | 'Al Ain' | 'Fujairah' | 'Abu Dhabi' | 'Ras Al Khaimah'
 export interface IEmirate {
-  name_en: string;
+  name_en: EmirateName;
   name_short: string;
   name_ar: string;
   delivery: number;
-  latLng: ILatLng;
+  latLng: TLatLnh;
   image: string;
 }
+
 export interface IArea {
     location_path_en: string[];
     coords: string[] | number[];

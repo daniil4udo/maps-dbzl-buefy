@@ -38,8 +38,8 @@
 </template>
 
 <script lang="ts">
-    import GoogleMapsApiLoader from 'google-maps-api-loader';
-    import Vue from 'vue';
+    import { Loader, LoaderOptions, google } from 'google-maps';
+    import { Component, Vue } from 'vue-property-decorator';
 
     import emirates from '@/assets/uaeGeoData/areas.json';
     import boundaries from '@/assets/uaeGeoData/boundaries.json';
@@ -56,6 +56,7 @@
     import rasalkhaimah from '../assets/uaeGeoData/rasAlKhaimah/areas.json';
     import sharjah from '../assets/uaeGeoData/sharjah/areas.json';
     import ummalquawain from '../assets/uaeGeoData/ummAlQuawain/areas.json';
+    import { EmirateKey, IEmirate, IBuilding, IBoundaries } from '../components/models';
 
     const uae = {
         abudhabi,
@@ -68,46 +69,45 @@
         sharjah,
     };
 
-    export default Vue.extend({
-        name: 'Address',
+    @Component({
         components: {
             Map,
             Neighborhood,
             Building,
         },
-        data() {
-            return {
-                google: null,
-                emirates,
-                emirate: 'dubai',
-                buildings,
-                boundaries,
-            };
-        },
-        computed: {
-            areas() {
-                return uae[this.emirate].sort((a, b) => ((a.name_en > b.name_en) ? 1 : -1));
-            },
-            areasObject() {
-                return this.areas.reduce((e, o) => {
-                    (e[o.value] = o);
-                    return e;
-                }, {});
-            },
-            emirateDetails() {
-                return this.emirates[this.emirate.toLowerCase()];
-            },
-        },
+    })
+    export default class Address extends Vue {
+        // Data
+        google = null as google | null;
+        apiKey = 'AIzaSyDCWGWQFBHWRuqhkSjWQFb6Sf7T8jm7Y6I';
+        options = {
+            libraries: [ 'geometry' ],
+        } as LoaderOptions;
+
+        emirates = emirates as Record<EmirateKey, IEmirate>
+        emirate = 'dubai' as EmirateKey;
+        buildings = buildings as Record<number, IBuilding>;
+        boundaries = boundaries as IBoundaries;
+
+        // Computed
+        get areas() {
+            return uae[this.emirate].sort((a, b) => ((a.name_en > b.name_en) ? 1 : -1));
+        }
+
+        get emirateDetails() {
+            return this.emirates[this.emirate.toLowerCase()];
+        }
+
+        // Created hook
         async created() {
-            const gMaps = await GoogleMapsApiLoader({
-                libraries: [ 'geometry' ],
-                apiKey: 'AIzaSyDCWGWQFBHWRuqhkSjWQFb6Sf7T8jm7Y6I',
-            });
+            // Initializing map in her to make sure it avaliable on created in the Map component
+            const loader = new Loader(this.apiKey, this.options);
+            const gMaps = await loader.load();
 
             this.google = gMaps;
-        },
-        methods: {
-            onAreaChange(v) {},
-        },
-    });
+        }
+
+        // Methods
+        onAreaChange(area) {}
+    }
 </script>
