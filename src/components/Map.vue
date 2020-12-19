@@ -36,25 +36,22 @@
 </template>
 
 <script lang="ts">
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    /* eslint-disable no-unused-vars */
     import { PropType } from '@vue/composition-api';
-    import GoogleMapsApiLoader from 'google-maps-api-loader';
     import has from 'lodash/has';
-    import inRange from 'lodash/inRange';
     import Vue from 'vue';
 
     import Tooltip from '@/components/Tooltip.vue';
+    import { isValidLat, isValidLng } from '@/utils/isValidLatLng';
+    import { keyBy } from '@/utils/keyBy';
 
     import { IEmirate } from './models';
-
     // Events names
     const idNeighbourhood = 'id_neighbourhood';
     const idBuilding = 'id_building';
     const dbzMapAutocomplete = 'dbz.map.autocomplete';
-    const dbzMapChange = 'dbz.map.change';
-    const dbzMapClose = 'dbz.map.close';
-    const dbzMapError = 'dbz.map.error';
+    // const dbzMapChange = 'dbz.map.change';
+    // const dbzMapClose = 'dbz.map.close';
+    // const dbzMapError = 'dbz.map.error';
 
     export default Vue.extend({
         name: 'Map',
@@ -146,10 +143,7 @@
         },
         computed: {
             keyedByAreas() {
-                return this.areas.reduce((e, o) => {
-                    (e[o.value] = o);
-                    return e;
-                }, {});
+                return keyBy(this.areas, 'value');
             },
             polygonInstance() {
                 const polygon = [];
@@ -170,6 +164,16 @@
 
                 // return Object.keys(this.keyedByAreas).map(n.bind(this));
                 return polygon;
+            },
+        },
+        watch: {
+            emirate(val, oldVal) {
+                const latLng = new this.google.maps.LatLng(
+                    this.emirateDetails.latLng[0],
+                    this.emirateDetails.latLng[1],
+                );
+
+                this.handleGoogleMapClick({ latLng });
             },
         },
         mounted() {
@@ -202,33 +206,14 @@
             setTooltipText(tt: string) {
                 this.tooltipText = tt;
             },
-            // Coordinates handlers
-            isValidLat(lat) {
-                if (!lat == null) {
-                    return false;
-                }
-
-                lat = Number(lat);
-
-                return isNaN(lat) && inRange(lat, -90, 91);
-            },
-            isValidLng(lng) {
-                if (!lng == null) {
-                    return false;
-                }
-
-                lng = Number(lng);
-
-                return isNaN(lng) && inRange(lng, -180, 180);
-            },
             setUserLocation() {
-                if (this.isValidLat(this.center.lat) && this.isValidLng(this.center.lng)) {
+                if (isValidLat(this.center.lat) && isValidLng(this.center.lng)) {
                     this.latLngInstance = new this.google.maps.LatLng(
                         this.center.lat,
                         this.center.lng,
                     );
                 }
-                else if (this.isValidLat(window.localStorage.getItem('lat')) && this.isValidLng(window.localStorage.getItem('lng'))) {
+                else if (isValidLat(window.localStorage.getItem('lat')) && isValidLng(window.localStorage.getItem('lng'))) {
                     this.latLngInstance = new this.google.maps.LatLng(
                         window.localStorage.getItem('lat'),
                         window.localStorage.getItem('lng'),
@@ -249,11 +234,14 @@
                 }
             },
             setCoordinates(e) {
-                this.center.lat = e.lat();
-                this.center.lng = e.lng();
+                const lat = typeof e.lat === 'function' ? e.lat() : e.lat;
+                const lng = typeof e.lng === 'function' ? e.lng() : e.lng;
 
-                window.localStorage.setItem('lat', e.lat());
-                window.localStorage.setItem('lng', e.lng());
+                this.center.lat = lat;
+                this.center.lng = lng;
+
+                window.localStorage.setItem('lat', lat);
+                window.localStorage.setItem('lng', lng);
 
                 this.$emit('center-changed', this.center);
             },
@@ -332,7 +320,7 @@
                 else {
                     this.setTooltipText(this.messages.loading);
 
-                    const ElevationService = new this.google.maps.ElevationService();
+                    const ElevationService = new this.google.maps.ElevationService() as google.maps.ElevationService;
 
                     ElevationService.getElevationForLocations(
                         { locations: [ e ] },
@@ -409,11 +397,11 @@
 
                 this.$emit('click');
             },
-            handleElevationResponse(e, o) {
+            handleElevationResponse(results: google.maps.ElevationResult[], status: google.maps.ElevationStatus) {
                 // querySelectorPin.classList.add('outside-polygons');
 
-                if (o === this.google.maps.ElevationStatus.OK && e[0]) {
-                    e[0].elevation > 0
+                if (status === this.google.maps.ElevationStatus.OK && results[0]) {
+                    results[0].elevation > 0
                         ? (this.setTooltipText(this.messages.land))
                         : (this.setTooltipText(this.messages.water));
                 }
