@@ -318,12 +318,12 @@
             }
         }
 
-        @Emit('area-changed')
         updateArea(newArea: IPolygon) {
             if (this.foundAreaPoint?.name !== newArea?.name) {
                 this.foundAreaPoint = newArea;
 
-                return newArea;
+                // Not using @Emit here to avoid redundant emits of null
+                this.$emit('area-changed', newArea);
             }
         }
 
