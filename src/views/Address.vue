@@ -26,11 +26,13 @@
             :buildings="buildings"
         />
 
-        <Map
+        {{ coords }}
+        <b-button @click="setNewCoords" v-text="'Set New Coords'" />
+        <DmcMap
             v-if="google"
+            v-model="coords"
             :google="google"
-            :emirate="emirate"
-            :emirate-details="emirateDetails"
+            :emirate="emirateDetails"
             :areas="areas"
             :buildings="buildings"
             @area-changed="onAreaChange"
@@ -46,7 +48,7 @@
     import boundaries from '@/assets/uaeGeoData/boundaries.json';
     import buildings from '@/assets/uaeGeoData/buildings.json';
     import Building from '@/components/Building.vue';
-    import Map from '@/components/Map.vue';
+    import DmcMap from '@/components/Map.vue';
     import Neighborhood from '@/components/Neighborhood.vue';
     import { EmirateKey, IEmirate, IArea, IBuilding, IBoundaries } from '@/components/models';
 
@@ -72,7 +74,7 @@
 
     @Component({
         components: {
-            Map,
+            DmcMap,
             Neighborhood,
             Building,
         },
@@ -89,6 +91,11 @@
         emirate = 'dubai' as EmirateKey;
         buildings = buildings as Record<number, IBuilding>;
         boundaries = boundaries as IBoundaries;
+
+        coords = {
+            lat: null,
+            lng: null,
+        }
 
         // Computed
         get areas(): IArea[] {
@@ -108,9 +115,14 @@
             this.google = gMaps;
         }
 
+        setNewCoords() {
+                this.coords.lat = 25.510498;
+                this.coords.lng = 55.57039;
+        }
+
         // Methods
         onAreaChange(area) {
-            // console.log({ area });
+            // console.log(area);
         }
     }
 </script>

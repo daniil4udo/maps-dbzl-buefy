@@ -38,13 +38,12 @@
 <script lang="ts">
     import { google } from 'google-maps';
     import has from 'lodash/has';
-    import { Component, Prop, Ref, Watch, Emit, Vue } from 'vue-property-decorator';
+    import { Component, Prop, Ref, Watch, Emit, VModel, Vue } from 'vue-property-decorator';
 
     import Tooltip from '@/components/Tooltip.vue';
-    import { isValidLat, isValidLng } from '@/utils/isValidLatLng';
     import { keyBy } from '@/utils/keyBy';
 
-    import { EmirateKey, IEmirate, IArea, IBuilding, IPolygon } from './models';
+    import { IEmirate, IArea, IBuilding, IPolygon, ILatLng } from './models';
     // Events names
     const idNeighbourhood = 'id_neighbourhood';
     const idBuilding = 'id_building';
@@ -54,6 +53,7 @@
     // const dbzMapError = 'dbz.map.error';
 
     @Component({
+        name: 'DmcMap',
         components: {
             Tooltip,
         },
@@ -61,8 +61,7 @@
     export default class Map extends Vue {
         // googl instance as in window.google
         @Prop({ required: true }) readonly google!: google;
-        @Prop({ type: String }) emirate!: EmirateKey
-        @Prop({ type: Object }) readonly emirateDetails!: IEmirate;
+        @Prop({ type: Object }) readonly emirate!: IEmirate;
         @Prop({ type: Array }) readonly areas!: IArea[];
         @Prop({ type: Object }) readonly buildings!: Record<number, IBuilding>
 
@@ -73,8 +72,8 @@
         mapInstance = null as google.maps.Map<HTMLDivElement>
         mapOptions = {
             center: new this.google.maps.LatLng(
-                this.emirateDetails.latLng[0],
-                this.emirateDetails.latLng[1],
+                this.emirate.latLng[1],
+                this.emirate.latLng[0],
             ),
             mapTypeId: this.google.maps.MapTypeId.ROADMAP,
             zoom: 12,
@@ -106,10 +105,10 @@
         }
 
         latLngInstance = null as google.maps.LatLng
-        center = {
-            lat: null,
-            lng: null,
-        }
+        // center = {
+        //     lat: null,
+        //     lng: null,
+        // }
 
         //
         foundAreaPoint = null as IPolygon
@@ -136,6 +135,7 @@
                 if (has(this.keyedByAreas, key)) {
                     const { [this.isArabic ? 'name_ar' : 'name_en']: name, area, value } = this.keyedByAreas[key];
 
+                    // Due to large amount of initial polygons, use native cTr instead of GLatLng
                     const paths = area.map(e => new this.google.maps.LatLng(e[1], e[0]));
                     const boundaries = new this.google.maps.Polygon({ paths, ...this.polygonOptions });
 
@@ -151,14 +151,29 @@
             return polygon;
         }
 
-        @Watch('emirate', { immediate: false, deep: false })
-        onEmirateChange(val: EmirateKey, oldVal: EmirateKey) {
-            const latLng = new this.google.maps.LatLng(
-                this.emirateDetails.latLng[0],
-                this.emirateDetails.latLng[1],
+        @VModel({ type: Object, default: () => ({ lat: null, lng: null }) }) center!: ILatLng
+        @Watch('center', { immediate: false, deep: true })
+        onCenterChanged(val: ILatLng) {
+            if ((val.lat != null) && (val.lng != null)) {
+                const mapCenter = new this.google.maps.LatLng(
+                    val.lat,
+                    val.lng,
+                );
+                this.setMapCenter(mapCenter);
+            }
+        }
+
+        @Watch('emirate', { immediate: false, deep: true })
+        onEmirateChange(val: IEmirate, oldVal: IEmirate) {
+            if (val != null && val.name_en !== oldVal.name_en) {
+                const mapCenter = new this.google.maps.LatLng(
+                    val.latLng[1],
+                    val.latLng[0],
             );
 
-            this.handleGoogleMapClick({ latLng });
+                this.mapInstance.setZoom(this.mapOptions.zoom);
+                this.setMapCenter(mapCenter);
+            }
         }
 
         mounted() {
@@ -166,17 +181,47 @@
                 this.initGoogleMaps();
                 this.addEventListeners();
             }
+            else {
+                throw new Error('Cannot initialize Map without the GMap instance');
+            }
         }
 
+        /**
+         * Mount
+         */
         initGoogleMaps() {
             this.google.maps.visualRefresh = true;
 
-            if (this.googleMap instanceof Element) {
+            if (this.googleMap instanceof HTMLDivElement) {
                 this.mapInstance = new this.google.maps.Map(this.googleMap, this.mapOptions);
                 this.mapInstance.controls[this.google.maps.ControlPosition.RIGHT_CENTER].push(this.tooltip);
             }
+        }
 
-            // this.createPolygons(this.keyedByAreas);
+        addEventListeners() {
+            // document.addEventListener('dbz.autocomplete.change', this.handleAutocompleteChange.bind(this));
+            // document.addEventListener('dbz.neighborhood.change', this.handleNeighborhoodChange.bind(this));
+
+            this.google.maps.event.addListenerOnce(this.mapInstance, 'tilesloaded', () => {
+                this.handleGoogleMapTilesLoaded.call(this);
+
+                // Rest of the listners attach only once tiles are loaded
+                this.google.maps.event.addListener(this.mapInstance, 'dragstart', this.handleGoogleMapDragStart.bind(this));
+                this.google.maps.event.addListener(this.mapInstance, 'idle', this.handleGoogleMapDragEnd.bind(this));
+                this.google.maps.event.addListener(this.mapInstance, 'click', this.handleGoogleMapClick.bind(this));
+            });
+        }
+
+        /**
+         * Set handlers
+         */
+        setMapCenter(mapCenter: google.maps.LatLng, lookupArea?: IArea | IPolygon, panTo = true) {
+            if (panTo) {
+                this.mapInstance.panTo(mapCenter);
+            }
+
+            this.setCoordinates(mapCenter);
+            this.locatePoint(mapCenter, lookupArea);
         }
 
         // Polygon handlers
@@ -197,27 +242,33 @@
         }
 
         setUserLocation() {
-            if (isValidLat(this.center.lat) && isValidLng(this.center.lng)) {
+            if (this.center.lat != null && this.center.lng != null) {
                 this.latLngInstance = new this.google.maps.LatLng(
                     this.center.lat,
                     this.center.lng,
                 );
             }
-            else if (isValidLat(window.localStorage.getItem('lat')) && isValidLng(window.localStorage.getItem('lng'))) {
+            else if (window.localStorage.getItem('lat') && window.localStorage.getItem('lng')) {
                 this.latLngInstance = new this.google.maps.LatLng(
                     parseFloat(window.localStorage.getItem('lat')),
                     parseFloat(window.localStorage.getItem('lng')),
                 );
             }
-            else if (window.navigator.geolocation) {
-                window.navigator.geolocation.getCurrentPosition(
-                    ({ coords }) => {
-                        this.latLngInstance = new this.google.maps.LatLng(coords.latitude, coords.longitude);
-                    },
-                    () => {
-                        this.latLngInstance = null;
-                    },
-                );
+            else if ('geolocation' in window.navigator) {
+                const options = {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0,
+                };
+                const getLocation: PositionCallback = async ({ coords }) => {
+                    this.latLngInstance = new this.google.maps.LatLng(coords.latitude, coords.longitude);
+                };
+                const getError: PositionErrorCallback = err => {
+                    console.error('⛔️', err.message);
+                    this.latLngInstance = null;
+                };
+
+                window.navigator.geolocation.getCurrentPosition(getLocation, getError, options);
             }
             else {
                 this.latLngInstance = null;
@@ -225,14 +276,14 @@
         }
 
         setCoordinates(e: google.maps.LatLng) {
-            const lat = typeof e.lat === 'function' ? e.lat() : e.lat;
-            const lng = typeof e.lng === 'function' ? e.lng() : e.lng;
+            // const lat = (typeof e.lat === 'function' ? e.lat() : e.lat) as number;
+            // const lng = (typeof e.lng === 'function' ? e.lng() : e.lng) as number;
 
-            this.center.lat = lat;
-            this.center.lng = lng;
+            this.center.lat = e.lat();
+            this.center.lng = e.lng();
 
-            window.localStorage.setItem('lat', JSON.stringify(lat));
-            window.localStorage.setItem('lng', JSON.stringify(lng));
+            window.localStorage.setItem('lat', JSON.stringify(e.lat()));
+            window.localStorage.setItem('lng', JSON.stringify(e.lng()));
         }
 
         setNeighbourhood(id: string | number) {
@@ -244,9 +295,7 @@
 
             const latLng = new this.google.maps.LatLng(neighbourhood.coords[1], neighbourhood.coords[0]);
 
-            this.mapInstance.panTo(latLng);
-            this.setCoordinates(latLng);
-            this.locatePoint(latLng, neighbourhood);
+            this.setMapCenter(latLng, neighbourhood);
         }
 
         setBuilding(buildingValue: string | number) {
@@ -259,10 +308,7 @@
             if (building.coords && building.coords.length === 2) {
                 const n = new this.google.maps.LatLng(building.coords[1], building.coords[0]);
 
-                this.mapInstance.panTo(n);
-
-                this.setCoordinates(n);
-                this.locatePoint(n);
+                this.setMapCenter(n);
 
                 const t = this.isArabic
                     ? building.name_ar
@@ -327,17 +373,6 @@
             }
         }
 
-        // LISTNERS
-        addEventListeners() {
-            // document.addEventListener('dbz.autocomplete.change', this.handleAutocompleteChange.bind(this));
-            // document.addEventListener('dbz.neighborhood.change', this.handleNeighborhoodChange.bind(this));
-
-            this.google.maps.event.addListenerOnce(this.mapInstance, 'tilesloaded', this.handleGoogleMapTilesLoaded.bind(this));
-            this.google.maps.event.addListener(this.mapInstance, 'dragstart', this.handleGoogleMapDragStart.bind(this));
-            this.google.maps.event.addListener(this.mapInstance, 'idle', this.handleGoogleMapDragEnd.bind(this));
-            this.google.maps.event.addListener(this.mapInstance, 'click', this.handleGoogleMapClick.bind(this));
-        }
-
         // Local events handler
         handleAutocompleteChange(eventPayload) {
             if (eventPayload.detail.id === idBuilding) {
@@ -362,6 +397,22 @@
         }
 
         // GMaps event hadlers
+        @Emit('tilesloaded')
+        handleGoogleMapTilesLoaded() {
+            // TODO: set some maps styles
+            // TODO: add google maps placeholder img once tilels are loaded
+            // querySelectorTooltip.classList.remove('hidden');
+
+            this.setUserLocation();
+
+            const mapCenter = this.latLngInstance || this.mapOptions.center;// this.mapOptions.center;
+
+            this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomIncrement);
+            this.setMapCenter(mapCenter);
+
+            return mapCenter;
+        }
+
         @Emit('dragstart')
         handleGoogleMapDragStart() {
             const mapCenter = this.mapInstance.getCenter();
@@ -375,28 +426,8 @@
         handleGoogleMapDragEnd() {
             const mapCenter = this.mapInstance.getCenter();
 
-            this.setCoordinates(mapCenter);
-            this.locatePoint(mapCenter);
+            this.setMapCenter(mapCenter, null, false);
             // this.dispatchEvent();
-
-            return mapCenter;
-        }
-
-        @Emit('tilesloaded')
-        handleGoogleMapTilesLoaded() {
-            // TODO: set some maps styles
-            // TODO: add google maps placeholder img once tilels are loaded
-            // querySelectorTooltip.classList.remove('hidden');
-
-            this.setUserLocation();
-
-            const mapCenter = this.latLngInstance || this.mapOptions.center;// this.mapOptions.center;
-
-            this.mapInstance.panTo(mapCenter);
-            this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomIncrement);
-
-            this.setCoordinates(mapCenter);
-            this.locatePoint(mapCenter);
 
             return mapCenter;
         }
