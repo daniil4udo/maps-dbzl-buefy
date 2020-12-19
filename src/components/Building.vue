@@ -19,11 +19,6 @@
     export default defineComponent({
         name: 'Building',
         props: {
-            // google instance as in window.google
-            google: {
-                type: (Object as unknown) as PropType<object>,
-                default: () => null,
-            },
             emirate: {
                 type: (String as unknown) as PropType<string>,
                 default: () => 'dubai',
