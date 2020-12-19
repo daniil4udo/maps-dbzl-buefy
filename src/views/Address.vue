@@ -1,5 +1,5 @@
 <template>
-    <div v-if="google" class="container">
+    <div class="container">
         <b-field label="Emirate">
             <b-radio-button
                 v-for="(val, key) in emirates"
@@ -27,6 +27,7 @@
         />
 
         <Map
+            v-if="google"
             :google="google"
             :emirate="emirate"
             :emirate-details="emirateDetails"
@@ -47,6 +48,7 @@
     import Building from '@/components/Building.vue';
     import Map from '@/components/Map.vue';
     import Neighborhood from '@/components/Neighborhood.vue';
+    import { EmirateKey, IEmirate, IArea, IBuilding, IBoundaries } from '@/components/models';
 
     import abudhabi from '../assets/uaeGeoData/abuDhabi/areas.json';
     import ajman from '../assets/uaeGeoData/ajman/areas.json';
@@ -56,7 +58,6 @@
     import rasalkhaimah from '../assets/uaeGeoData/rasAlKhaimah/areas.json';
     import sharjah from '../assets/uaeGeoData/sharjah/areas.json';
     import ummalquawain from '../assets/uaeGeoData/ummAlQuawain/areas.json';
-    import { EmirateKey, IEmirate, IBuilding, IBoundaries } from '../components/models';
 
     const uae = {
         abudhabi,
@@ -90,11 +91,11 @@
         boundaries = boundaries as IBoundaries;
 
         // Computed
-        get areas() {
+        get areas(): IArea[] {
             return uae[this.emirate].sort((a, b) => ((a.name_en > b.name_en) ? 1 : -1));
         }
 
-        get emirateDetails() {
+        get emirateDetails(): IEmirate {
             return this.emirates[this.emirate.toLowerCase()];
         }
 
@@ -108,6 +109,8 @@
         }
 
         // Methods
-        onAreaChange(area) {}
+        onAreaChange(area) {
+            // console.log({ area });
+        }
     }
 </script>
