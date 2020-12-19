@@ -61,10 +61,10 @@
     export default class Map extends Vue {
         // googl instance as in window.google
         @Prop({ required: true }) readonly google!: google;
-        @Prop({ required: true, default: 'dubai' }) emirate!: EmirateKey
-        @Prop(Object) readonly emirateDetails!: IEmirate;
-        @Prop(Array) readonly areas!: IArea[];
-        @Prop(Object) readonly buildings!: Record<number, IBuilding>
+        @Prop({ type: String }) emirate!: EmirateKey
+        @Prop({ type: Object }) readonly emirateDetails!: IEmirate;
+        @Prop({ type: Array }) readonly areas!: IArea[];
+        @Prop({ type: Object }) readonly buildings!: Record<number, IBuilding>
 
         @Ref() readonly googleMap!: HTMLDivElement;
         @Ref() readonly tooltip!: HTMLDivElement;
