@@ -1,34 +1,38 @@
 export interface ILatLng {
-    lat: null | number;
-    lng: null | number;
+    lat: number;
+    lng: number;
 }
 export type TLatLnh = [ number, number]
 
 export type EmirateKey = 'dubai' | 'ajman' | 'sharjah' | 'ummalquawain' | 'alain' | 'fujairah' | 'abudhabi' | 'rasalkhaimah'
 export type EmirateName = 'Dubai' | 'Ajman' | 'Sharjah' | 'Umm Al Quawain' | 'Al Ain' | 'Fujairah' | 'Abu Dhabi' | 'Ras Al Khaimah'
+export type EmirateValue = 'DXB' | 'AJM' | 'SHJ' | 'UAQ' | 'AIN' | 'FUJ' | 'ADB' | 'RAK'
+
 export interface IEmirate {
   name_en: EmirateName;
-  name_short: string;
   name_ar: string;
   delivery: number;
-  latLng: TLatLnh;
+  coords: TLatLnh;
   image: string;
+  value: EmirateValue;
+  area?: TLatLnh[];
 }
 
 export interface IArea {
-    location_path_en: string[];
-    coords: number[];
-    area: Array<number>[];
-    location_path_ar: string[];
     name_en: string;
-    is_migrated: boolean;
     name_ar: string;
+    location_path_en: string[];
+    location_path_ar: string[];
+    coords: TLatLnh;
+    area: TLatLnh[];
+    is_migrated: boolean;
     value: number;
+    custom_format?: string;
 }
 
-export interface IPolygon {
-    name: IArea['name_en' | 'name_ar'];
-    value: IArea['value'];
+export interface IPolygon<T extends IArea | IEmirate> {
+    name: T['name_en' | 'name_ar'];
+    value: T['value'];
     boundaries: google.maps.Polygon;
 }
 export interface ILocationData<T> {
@@ -46,6 +50,8 @@ export interface IBuilding {
     coords: null | number[];
     name_ar: string;
     neighbourhood_id: number | string;
+    custom_format?: string;
+    value?: number;
 }
 
 export interface ILocationStateInterface {

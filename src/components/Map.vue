@@ -61,8 +61,12 @@
     export default class Map extends Vue {
         // googl instance as in window.google
         @Prop({ required: true }) readonly google!: google;
+        @Prop({ type: String, default: () => 'UAE' }) country!: string;
+
         @Prop({ type: Object }) readonly emirate!: IEmirate;
+        @Prop({ type: Object }) area!: IArea;
         @Prop({ type: Object }) readonly areas!: Record<string, IArea>;
+        @Prop({ type: Object }) building!: IBuilding
         @Prop({ type: Object }) readonly buildings!: Record<number, IBuilding>
 
         @Ref() readonly googleMap!: HTMLDivElement;
@@ -71,6 +75,7 @@
         // Data
         mapInstance = null as google.maps.Map<HTMLDivElement>
         mapOptions = {
+            // TODO: move to computed for the generic sake
             center: new this.google.maps.LatLng(
                 this.emirate.coords[1],
                 this.emirate.coords[0],
@@ -88,6 +93,9 @@
             },
             panControl: false,
             zoomIncrement: 2,
+            zoomEmirate: 1,
+            zoomArea: 2,
+            zoomBuilding: 3,
             animDuration: 200,
             delayAnim: 100,
             shortAnim: 400,
@@ -169,6 +177,20 @@
             }
         }
 
+        @Watch('area', { immediate: false, deep: true })
+        onAreaChanged(newV: IArea) {
+            if (!isNil(newV && newV.value)) {
+                this.setNeighbourhood(newV.value);
+            }
+        }
+
+        @Watch('building', { immediate: false, deep: true })
+        onBuildingChanged(newV: IBuilding) {
+            if (!isNil(newV && newV.value)) {
+                this.setBuilding(newV.value);
+            }
+        }
+
         @Watch('emirate', { immediate: false, deep: true })
         onEmirateChange(val: IEmirate, oldVal: IEmirate) {
             if (!isNil(val) && val.name_en !== oldVal.name_en) {
@@ -177,7 +199,7 @@
                     val.coords[0],
                 );
 
-                this.mapInstance.setZoom(this.mapOptions.zoom);
+                this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomEmirate);
                 this.mapInstance.panTo(mapCenter);
             }
         }
@@ -306,6 +328,7 @@
             const mapCenter = new this.google.maps.LatLng(neighbourhood.coords[1], neighbourhood.coords[0]);
 
             this.mapInstance.panTo(mapCenter);
+            this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomArea);
             this.setCoordinates(mapCenter);
 
             this.locatePoint(mapCenter, neighbourhood);
@@ -322,6 +345,7 @@
                 const mapCenter = new this.google.maps.LatLng(building.coords[1], building.coords[0]);
 
                 this.mapInstance.panTo(mapCenter);
+                this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomBuilding);
                 this.locatePoint(mapCenter);
                 this.setCoordinates(mapCenter);
 
@@ -460,12 +484,21 @@
             return e.latLng;
         }
 
+        // In case we decide move away from Google Elevation API
+        // handle other request in here
+        getElevationResponse(results: Partial<google.maps.ElevationResult>[], status: google.maps.ElevationStatus): number | null {
+            return status === this.google.maps.ElevationStatus.OK && results[0]
+                ? results[0].elevation
+                : null;
+        }
+
         // TODO: Too many time got called, have to fix it
         handleElevationResponse(results: Partial<google.maps.ElevationResult>[], status: google.maps.ElevationStatus) {
             // querySelectorPin.classList.add('outside-polygons');
+            const elevetioResponse = this.getElevationResponse(results, status);
 
-            if (status === this.google.maps.ElevationStatus.OK && results[0]) {
-                results[0].elevation > 0
+            if (!isNil(elevetioResponse)) {
+                elevetioResponse > 0
                     ? (this.setTooltipText(this.messages.land))
                     : (this.setTooltipText(this.messages.water));
             }
@@ -490,7 +523,7 @@
     .dbz-map__canvas {
         position: relative;
         width: 100%;
-        height: 200px;
+        height: 500px;
         background: url('https://dbzstatic-a.akamaihd.net/images/paa/dummy_map_2.jpg') center center no-repeat;
         border-radius: 8px;
 

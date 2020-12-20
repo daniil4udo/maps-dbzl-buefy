@@ -47,13 +47,11 @@
         @VModel({ type: Object, default: () => null }) selected!: Record<string, T>
 
         get filteredDataObj() {
-            const dataArr = Object.values(this.data);
-            const dataLen = dataArr.length;
             const filteredData = [];
 
-            for (let i = 0; i < dataLen; i++) {
-                if (String(dataArr[i].name_en).toLowerCase().includes(this.inputModel.toLowerCase())) {
-                    filteredData.push(dataArr[i]);
+            for (const value in this.data) {
+                if (String(this.data[value].name_en).toLowerCase().includes(this.inputModel.toLowerCase())) {
+                    filteredData.push({ ...this.data[value], value });
                 }
             }
 

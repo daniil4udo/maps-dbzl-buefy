@@ -19,6 +19,7 @@
             placeholder="Barsha 1"
             :emirate="emirate"
             :data="emirateAreas"
+            @input="option => onAutocompleteInput(option, 'area')"
         />
 
         <Autocomplete
@@ -28,6 +29,7 @@
             placeholder="Meera"
             :emirate="emirate"
             :data="emirateBuildings"
+            @input="option => onAutocompleteInput(option, 'building')"
         />
 
         {{ coords }}
@@ -39,13 +41,15 @@
             :emirate="emirateDetails"
             :areas="emirateAreas"
             :buildings="emirateBuildings"
-            @area-changed="onAreaChange"
+            :area="area"
+            :building="building"
         />
     </div>
 </template>
 
 <script lang="ts">
     import { Loader, LoaderOptions, google } from 'google-maps';
+    import { isNil } from 'lodash';
     import { Component, Vue } from 'vue-property-decorator';
 
     import emirates from '@/assets/uaeGeoData/areas.json';
@@ -85,9 +89,11 @@
         // Data
         google = null as google | null;
         apiKey = 'AIzaSyDCWGWQFBHWRuqhkSjWQFb6Sf7T8jm7Y6I';
-        options = { libraries: [ 'geometry' ] } as LoaderOptions;
+        options = { libraries: [ 'geometry', 'places' ] } as LoaderOptions;
 
         emirate = 'dubai' as EmirateKey;
+        area = null
+        building = null
 
         // JSONS
         UAE_Emirates = emirates as Record<EmirateKey, IEmirate>
@@ -112,27 +118,23 @@
         }
 
         get emirateBuildings(): Record<string, IBuilding> {
-            const computedBuildings = {} as Partial<Record<string, IBuilding>>;
+            // const computedBuildings = {} as Partial<Record<string, IBuilding>>;
 
-            for (const key in buildings as Record<string, IBuilding>) {
-                if (true) {
-                    const custom_format = this.emirateAreas[buildings[key].neighbourhood_id]?.custom_format;
+            // for (const key in buildings as Record<string, IBuilding>) {
+            //     if (true) {
+            //         const custom_format = this.emirateAreas[buildings[key].neighbourhood_id]
+            //             ? this.emirateAreas[buildings[key].neighbourhood_id].custom_format
+            //             : null;
 
-                    Object.assign(
-                        computedBuildings,
-                        { [key]: { ...buildings[key], custom_format } },
-                    );
-                }
-            }
+            //         Object.assign(
+            //             computedBuildings,
+            //             { [key]: { ...buildings[key], custom_format } },
+            //         );
+            //     }
+            // }
 
-            return computedBuildings;
-            // return buildings
-            //     // .sort((a, b) => ((a.name_en > b.name_en) ? 1 : -1))
-            //     .map(area => {
-            //         area.custom_format = area.location_path_en.reverse().join(', ');
-            //         return area;
-            //     })
-            //     .reduce((e, o) => Object.assign(e, { [o.value]: o }), {});
+            // return computedBuildings;
+            return buildings;
         }
 
         get emirateDetails(): IEmirate {
@@ -155,8 +157,17 @@
         }
 
         // Methods
-        onAreaChange(area) {
-            // console.log(area);
+        onAutocompleteInput(payload: IBuilding, scope: string) {
+            if (isNil(payload)) {
+                return;
+            }
+
+            if (scope === 'building') {
+                this.building = payload;
+            }
+            else if (scope === 'area') {
+                this.area = payload;
+            }
         }
     }
 </script>
