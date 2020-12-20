@@ -12,18 +12,22 @@
             </b-radio-button>
         </b-field>
 
-        <Neighborhood
+        <Autocomplete
             v-if="emirate"
+            field="name_en"
+            label="Chose Area"
+            placeholder="Barsha 1"
             :emirate="emirate"
-            :areas="emirateAreas"
-            :buildings="UAE_Buildings"
+            :data="emirateAreas"
         />
 
-        <Building
+        <Autocomplete
             v-if="emirate"
+            field="name_en"
+            label="Chose Building"
+            placeholder="Meera"
             :emirate="emirate"
-            :areas="emirateAreas"
-            :buildings="UAE_Buildings"
+            :data="emirateBuildings"
         />
 
         {{ coords }}
@@ -34,7 +38,7 @@
             :google="google"
             :emirate="emirateDetails"
             :areas="emirateAreas"
-            :buildings="UAE_Buildings"
+            :buildings="emirateBuildings"
             @area-changed="onAreaChange"
         />
     </div>
@@ -47,9 +51,8 @@
     import emirates from '@/assets/uaeGeoData/areas.json';
     import boundaries from '@/assets/uaeGeoData/boundaries.json';
     import buildings from '@/assets/uaeGeoData/buildings.json';
-    import Building from '@/components/Building.vue';
+    import Autocomplete from '@/components/Autocomplete.vue';
     import DmcMap from '@/components/Map.vue';
-    import Neighborhood from '@/components/Neighborhood.vue';
     import { EmirateKey, IEmirate, IArea, IBuilding, IBoundaries } from '@/components/models';
 
     import abudhabi from '../assets/uaeGeoData/abuDhabi/areas.json';
@@ -75,8 +78,7 @@
     @Component({
         components: {
             DmcMap,
-            Neighborhood,
-            Building,
+            Autocomplete,
         },
     })
     export default class Address extends Vue {
@@ -89,7 +91,6 @@
 
         // JSONS
         UAE_Emirates = emirates as Record<EmirateKey, IEmirate>
-        UAE_Buildings = buildings as Record<number, IBuilding>;
         UAE_Boundaries = boundaries as IBoundaries;
 
         coords = {
@@ -98,15 +99,40 @@
         }
 
         // Computed
-        get emirateAreas(): IArea[] {
+        get emirateAreas(): Record<string, IArea> {
             const currentEmirateArea = uae[this.emirate] as IArea[];
 
             return currentEmirateArea
-                .sort((a, b) => ((a.name_en > b.name_en) ? 1 : -1))
+                // .sort((a, b) => ((a.name_en > b.name_en) ? 1 : -1))
                 .map(area => {
                     area.custom_format = area.location_path_en.reverse().join(', ');
                     return area;
-                });
+                })
+                .reduce((e, o) => Object.assign(e, { [o.value]: o }), {});
+        }
+
+        get emirateBuildings(): Record<string, IBuilding> {
+            const computedBuildings = {} as Partial<Record<string, IBuilding>>;
+
+            for (const key in buildings as Record<string, IBuilding>) {
+                if (true) {
+                    const custom_format = this.emirateAreas[buildings[key].neighbourhood_id]?.custom_format;
+
+                    Object.assign(
+                        computedBuildings,
+                        { [key]: { ...buildings[key], custom_format } },
+                    );
+                }
+            }
+
+            return computedBuildings;
+            // return buildings
+            //     // .sort((a, b) => ((a.name_en > b.name_en) ? 1 : -1))
+            //     .map(area => {
+            //         area.custom_format = area.location_path_en.reverse().join(', ');
+            //         return area;
+            //     })
+            //     .reduce((e, o) => Object.assign(e, { [o.value]: o }), {});
         }
 
         get emirateDetails(): IEmirate {

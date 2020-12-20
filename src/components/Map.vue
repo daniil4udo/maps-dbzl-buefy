@@ -41,7 +41,6 @@
     import { Component, Prop, Ref, Watch, Emit, VModel, Vue } from 'vue-property-decorator';
 
     import Tooltip from '@/components/Tooltip.vue';
-    import { keyBy } from '@/utils/keyBy';
 
     import { IEmirate, IArea, IBuilding, IPolygon, ILatLng } from './models';
     // Events names
@@ -62,7 +61,7 @@
         // googl instance as in window.google
         @Prop({ required: true }) readonly google!: google;
         @Prop({ type: Object }) readonly emirate!: IEmirate;
-        @Prop({ type: Array }) readonly areas!: IArea[];
+        @Prop({ type: Object }) readonly areas!: Record<string, IArea>;
         @Prop({ type: Object }) readonly buildings!: Record<number, IBuilding>
 
         @Ref() readonly googleMap!: HTMLDivElement;
@@ -125,12 +124,12 @@
         }
 
         // Computed
-        get keyedByAreas() {
-            return keyBy(this.areas, 'value');
-        }
+        // get keyedByAreas() {
+        //     return keyBy(this.areas, 'value');
+        // }
 
         get areaPolygonInstances(): IPolygon<IArea>[] {
-            return this.createPolygonInstances(this.keyedByAreas);
+            return this.createPolygonInstances(this.areas);
         }
 
         createPolygonInstances<T extends IArea | IEmirate>(obj: Record<string, T>): IPolygon<T>[] {
@@ -293,7 +292,7 @@
         }
 
         setNeighbourhood(id: string | number) {
-            const neighbourhood = this.keyedByAreas[id];
+            const neighbourhood = this.areas[id];
 
             if (!neighbourhood || !neighbourhood.area || !neighbourhood.coords) {
                 return null;
@@ -368,6 +367,7 @@
                 this.setTooltipText(this.foundAreaPoint.name);
             }
             else {
+                // Get some elevation data if couldn find the location
                 this.setTooltipText(this.messages.loading);
 
                 const ElevationService = new this.google.maps.ElevationService() as google.maps.ElevationService;
@@ -456,7 +456,7 @@
         }
 
         // TODO: Too many time got called, have to fix it
-        handleElevationResponse(results: google.maps.ElevationResult[], status: google.maps.ElevationStatus) {
+        handleElevationResponse(results: Partial<google.maps.ElevationResult>[], status: google.maps.ElevationStatus) {
             // querySelectorPin.classList.add('outside-polygons');
 
             if (status === this.google.maps.ElevationStatus.OK && results[0]) {
