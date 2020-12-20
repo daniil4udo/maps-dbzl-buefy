@@ -13,7 +13,20 @@
 
             expanded
             @select="option => (selected = option)"
-        />
+        >
+            <template slot-scope="props">
+                <div class="media">
+                    <div class="media-content">
+                        <strong>{{ props.option.name_en }}</strong>
+                        <br>
+                        <small>
+                            <!-- {{ props.option.location_path_en.reverse().join(', ') }} -->
+                            {{ props.option.custom_format }}
+                        </small>
+                    </div>
+                </div>
+            </template>
+        </b-autocomplete>
     </b-field>
 </template>
 

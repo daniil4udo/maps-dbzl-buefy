@@ -1,10 +1,10 @@
 {
     "dubai": {
         "name_en": "Dubai",
-        "name_short": "DXB",
+        "value": "DXB",
         "name_ar": "\u062f\u0628\u064a",
         "delivery": 30,
-        "latLng": [
+        "coords": [
             55.139952,
             25.085539
         ],
@@ -12,10 +12,10 @@
     },
     "ajman": {
         "name_en": "Ajman",
-        "name_short": "AJM",
+        "value": "AJM",
         "name_ar": "\u0639\u062c\u0645\u0627\u0646",
         "delivery": null,
-        "latLng": [
+        "coords": [
             55.493059,
             25.399132
         ],
@@ -23,10 +23,10 @@
     },
     "sharjah": {
         "name_en": "Sharjah",
-        "name_short": "SHJ",
+        "value": "SHJ",
         "name_ar": "\u0627\u0644\u0634\u0627\u0631\u0642\u0629",
         "delivery": 30,
-        "latLng": [
+        "coords": [
             55.397014,
             25.35175
         ],
@@ -34,10 +34,10 @@
     },
     "ummalquawain": {
         "name_en": "Umm Al Quawain",
-        "name_short": "UAQ",
+        "value": "UAQ",
         "name_ar": "\u0623\u0645 \u0627\u0644\u0642\u064a\u0648\u064a\u0646",
         "delivery": null,
-        "latLng": [
+        "coords": [
             55.570392,
             25.510498
         ],
@@ -45,10 +45,10 @@
     },
     "alain": {
         "name_en": "Al Ain",
-        "name_short": "AIN",
+        "value": "AIN",
         "name_ar": "\u0627\u0644\u0639\u064a\u0646",
         "delivery": null,
-        "latLng": [
+        "coords": [
             55.727634,
             24.187362
         ],
@@ -56,10 +56,10 @@
     },
     "fujairah": {
         "name_en": "Fujairah",
-        "name_short": "FUJ",
+        "value": "FUJ",
         "name_ar": "\u0627\u0644\u0641\u062c\u064a\u0631\u0629",
         "delivery": null,
-        "latLng": [
+        "coords": [
             56.345572,
             25.120541
         ],
@@ -67,10 +67,10 @@
     },
     "abudhabi": {
         "name_en": "Abu Dhabi",
-        "name_short": "ADB",
+        "value": "ADB",
         "name_ar": "\u0623\u0628\u0648 \u0638\u0628\u064a",
         "delivery": 50,
-        "latLng": [
+        "coords": [
             54.371252,
             24.463412
         ],
@@ -78,10 +78,10 @@
     },
     "rasalkhaimah": {
         "name_en": "Ras Al Khaimah",
-        "name_short": "RAK",
+        "value": "RAK",
         "name_ar": "\u0631\u0623\u0633 \u0627\u0644\u062e\u064a\u0645\u0629",
         "delivery": null,
-        "latLng": [
+        "coords": [
             55.977058,
             25.795067
         ],

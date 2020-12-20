@@ -72,8 +72,8 @@
         mapInstance = null as google.maps.Map<HTMLDivElement>
         mapOptions = {
             center: new this.google.maps.LatLng(
-                this.emirate.latLng[1],
-                this.emirate.latLng[0],
+                this.emirate.coords[1],
+                this.emirate.coords[0],
             ),
             mapTypeId: this.google.maps.MapTypeId.ROADMAP,
             zoom: 12,
@@ -95,7 +95,7 @@
             longAnim: 1e3,
         }
 
-        // polygonInstance: null,
+        // areaPolygonInstances: null,
         polygonOptions = {
             fillColor: '#2153b0',
             fillOpacity: 0.2,
@@ -104,14 +104,14 @@
             strokeWeight: 1,
         }
 
-        latLngInstance = null as google.maps.LatLng
         // center = {
-        //     lat: null,
+            //     lat: null,
         //     lng: null,
         // }
 
         //
-        foundAreaPoint = null as IPolygon
+        latLngInstance = null as google.maps.LatLng
+        foundAreaPoint = null as IPolygon<IArea>
         boundaries = null as google.maps.Polygon
         //
         isArabic = false
@@ -129,11 +129,15 @@
             return keyBy(this.areas, 'value');
         }
 
-        get polygonInstance(): IPolygon[] {
+        get areaPolygonInstances(): IPolygon<IArea>[] {
+            return this.createPolygonInstances(this.keyedByAreas);
+        }
+
+        createPolygonInstances<T extends IArea | IEmirate>(obj: Record<string, T>): IPolygon<T>[] {
             const polygon = [];
-            for (const key in this.keyedByAreas) {
-                if (has(this.keyedByAreas, key)) {
-                    const { [this.isArabic ? 'name_ar' : 'name_en']: name, area, value } = this.keyedByAreas[key];
+            for (const key in obj) {
+                if (has(obj, key)) {
+                    const { [this.isArabic ? 'name_ar' : 'name_en']: name, area, value } = obj[key];
 
                     // Due to large amount of initial polygons, use native cTr instead of GLatLng
                     const paths = area.map(e => new this.google.maps.LatLng(e[1], e[0]));
@@ -147,32 +151,33 @@
                 }
             }
 
-            // return Object.keys(this.keyedByAreas).map(n.bind(this));
+            // return Object.keys(obj).map(n.bind(this));
             return polygon;
         }
 
         @VModel({ type: Object, default: () => ({ lat: null, lng: null }) }) center!: ILatLng
-        @Watch('center', { immediate: false, deep: true })
-        onCenterChanged(val: ILatLng) {
-            if ((val.lat != null) && (val.lng != null)) {
-                const mapCenter = new this.google.maps.LatLng(
-                    val.lat,
-                    val.lng,
-                );
-                this.setMapCenter(mapCenter);
-            }
-        }
+        // @Watch('center', { immediate: false, deep: true })
+        // onCenterChanged(val: ILatLng) {
+        //     if ((val.lat != null) && (val.lng != null)) {
+        //         const mapCenter = new this.google.maps.LatLng(
+        //             val.lat,
+        //             val.lng,
+        //         );
+
+        //         this.mapInstance.panTo(mapCenter);
+        //     }
+        // }
 
         @Watch('emirate', { immediate: false, deep: true })
         onEmirateChange(val: IEmirate, oldVal: IEmirate) {
             if (val != null && val.name_en !== oldVal.name_en) {
                 const mapCenter = new this.google.maps.LatLng(
-                    val.latLng[1],
-                    val.latLng[0],
-            );
+                    val.coords[1],
+                    val.coords[0],
+                );
 
                 this.mapInstance.setZoom(this.mapOptions.zoom);
-                this.setMapCenter(mapCenter);
+                this.mapInstance.panTo(mapCenter);
             }
         }
 
@@ -186,9 +191,6 @@
             }
         }
 
-        /**
-         * Mount
-         */
         initGoogleMaps() {
             this.google.maps.visualRefresh = true;
 
@@ -207,25 +209,13 @@
 
                 // Rest of the listners attach only once tiles are loaded
                 this.google.maps.event.addListener(this.mapInstance, 'dragstart', this.handleGoogleMapDragStart.bind(this));
-                this.google.maps.event.addListener(this.mapInstance, 'idle', this.handleGoogleMapDragEnd.bind(this));
+                this.google.maps.event.addListener(this.mapInstance, 'idle', this.handleGoogleMapIdle.bind(this));
                 this.google.maps.event.addListener(this.mapInstance, 'click', this.handleGoogleMapClick.bind(this));
             });
         }
 
-        /**
-         * Set handlers
-         */
-        setMapCenter(mapCenter: google.maps.LatLng, lookupArea?: IArea | IPolygon, panTo = true) {
-            if (panTo) {
-                this.mapInstance.panTo(mapCenter);
-            }
-
-            this.setCoordinates(mapCenter);
-            this.locatePoint(mapCenter, lookupArea);
-        }
-
         // Polygon handlers
-        setMapPolygon(e: IPolygon) {
+        setMapPolygon(e: IPolygon<IArea>) {
             if (this.boundaries) {
                 this.boundaries.setMap(null);
             }
@@ -247,14 +237,20 @@
                     this.center.lat,
                     this.center.lng,
                 );
+
+                return this.latLngInstance;
             }
-            else if (window.localStorage.getItem('lat') && window.localStorage.getItem('lng')) {
+
+            if (window.localStorage.getItem('lat') && window.localStorage.getItem('lng')) {
                 this.latLngInstance = new this.google.maps.LatLng(
                     parseFloat(window.localStorage.getItem('lat')),
                     parseFloat(window.localStorage.getItem('lng')),
                 );
+
+                return this.latLngInstance;
             }
-            else if ('geolocation' in window.navigator) {
+
+            if ('geolocation' in window.navigator) {
                 const options = {
                     enableHighAccuracy: true,
                     timeout: 5000,
@@ -270,20 +266,30 @@
 
                 window.navigator.geolocation.getCurrentPosition(getLocation, getError, options);
             }
+
             else {
                 this.latLngInstance = null;
+
+                return this.latLngInstance;
             }
         }
 
-        setCoordinates(e: google.maps.LatLng) {
+        setCoordinates({ lat, lng }: google.maps.LatLng) {
             // const lat = (typeof e.lat === 'function' ? e.lat() : e.lat) as number;
             // const lng = (typeof e.lng === 'function' ? e.lng() : e.lng) as number;
 
-            this.center.lat = e.lat();
-            this.center.lng = e.lng();
+            this.center.lat = lat();
+            this.center.lng = lng();
 
-            window.localStorage.setItem('lat', JSON.stringify(e.lat()));
-            window.localStorage.setItem('lng', JSON.stringify(e.lng()));
+            // TODO: When setting location from LS emirate stays
+            // window.localStorage.setItem('location', JSON.stringify({
+            //     country: 'uae',
+            //     ...this.emirate && { emirate: this.emirate.name_en },
+            //     area: this.foundAreaPoint ? this.foundAreaPoint.value : null,
+            // }));
+
+            window.localStorage.setItem('lat', JSON.stringify(lat()));
+            window.localStorage.setItem('lng', JSON.stringify(lng()));
         }
 
         setNeighbourhood(id: string | number) {
@@ -293,9 +299,12 @@
                 return null;
             }
 
-            const latLng = new this.google.maps.LatLng(neighbourhood.coords[1], neighbourhood.coords[0]);
+            const mapCenter = new this.google.maps.LatLng(neighbourhood.coords[1], neighbourhood.coords[0]);
 
-            this.setMapCenter(latLng, neighbourhood);
+            this.mapInstance.panTo(mapCenter);
+            this.setCoordinates(mapCenter);
+
+            this.locatePoint(mapCenter, neighbourhood);
         }
 
         setBuilding(buildingValue: string | number) {
@@ -306,9 +315,11 @@
             }
 
             if (building.coords && building.coords.length === 2) {
-                const n = new this.google.maps.LatLng(building.coords[1], building.coords[0]);
+                const mapCenter = new this.google.maps.LatLng(building.coords[1], building.coords[0]);
 
-                this.setMapCenter(n);
+                this.mapInstance.panTo(mapCenter);
+                this.locatePoint(mapCenter);
+                this.setCoordinates(mapCenter);
 
                 const t = this.isArabic
                     ? building.name_ar
@@ -322,19 +333,19 @@
         }
 
         //
-        findClosestArea(e: IPolygon[]) {
+        findClosestArea(e: IPolygon<IArea>[]) {
             const o = e.map(_e => this.google.maps.geometry.spherical.computeArea(_e.boundaries.getPath()));
             const n = o.indexOf(Math.min(...o));
 
             return e[n];
         }
 
-        areaContainingPoint(e: google.maps.LatLng, o?: IArea | IPolygon) {
+        areaContainingPoint(e: google.maps.LatLng, o?: IArea | IPolygon<IArea>) {
             const cb = o
                 ? ({ value }) => value === o.value
                 : ({ boundaries }) => this.google.maps.geometry.poly.containsLocation(e, boundaries);
 
-            const a = this.polygonInstance.filter(cb);
+            const a = this.areaPolygonInstances.filter(cb);
 
             const newArea = (a.length === 1)
                 ? a[0]
@@ -345,7 +356,11 @@
             this.updateArea(newArea);
         }
 
-        locatePoint(e: google.maps.LatLng, o?: IArea | IPolygon) {
+        locateEmirate() {
+
+        }
+
+        locatePoint(e: google.maps.LatLng, o?: IArea | IPolygon<IArea>) {
             this.areaContainingPoint(e, o);
 
             if (this.foundAreaPoint) {
@@ -364,11 +379,11 @@
             }
         }
 
-        updateArea(newArea: IPolygon) {
+        updateArea(newArea: IPolygon<IArea>) {
             if (this.foundAreaPoint?.name !== newArea?.name) {
                 this.foundAreaPoint = newArea;
 
-                // Not using @Emit here to avoid redundant emits of null
+                // Not using @Emit here to avoid redundant firing of null
                 this.$emit('area-changed', newArea);
             }
         }
@@ -408,7 +423,6 @@
             const mapCenter = this.latLngInstance || this.mapOptions.center;// this.mapOptions.center;
 
             this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomIncrement);
-            this.setMapCenter(mapCenter);
 
             return mapCenter;
         }
@@ -422,11 +436,13 @@
             return mapCenter;
         }
 
-        @Emit('dragend')
-        handleGoogleMapDragEnd() {
+        @Emit('dragidle')
+        handleGoogleMapIdle() {
             const mapCenter = this.mapInstance.getCenter();
 
-            this.setMapCenter(mapCenter, null, false);
+            this.locatePoint(mapCenter);
+            this.setCoordinates(mapCenter);
+
             // this.dispatchEvent();
 
             return mapCenter;
@@ -435,11 +451,11 @@
         @Emit('click')
         handleGoogleMapClick(e: { domEvent?: MouseEvent; latLng: google.maps.LatLng; pixel?: { x: number; y: number } }) {
             this.mapInstance.panTo(e.latLng);
-            this.handleGoogleMapDragEnd();
 
             return e.latLng;
         }
 
+        // TODO: Too many time got called, have to fix it
         handleElevationResponse(results: google.maps.ElevationResult[], status: google.maps.ElevationStatus) {
             // querySelectorPin.classList.add('outside-polygons');
 

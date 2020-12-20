@@ -2,7 +2,7 @@
     <div class="container">
         <b-field label="Emirate">
             <b-radio-button
-                v-for="(val, key) in emirates"
+                v-for="(val, key) in UAE_Emirates"
                 :key="key"
                 v-model="emirate"
                 :native-value="key"
@@ -15,15 +15,15 @@
         <Neighborhood
             v-if="emirate"
             :emirate="emirate"
-            :areas="areas"
-            :buildings="buildings"
+            :areas="emirateAreas"
+            :buildings="UAE_Buildings"
         />
 
         <Building
             v-if="emirate"
             :emirate="emirate"
-            :areas="areas"
-            :buildings="buildings"
+            :areas="emirateAreas"
+            :buildings="UAE_Buildings"
         />
 
         {{ coords }}
@@ -33,8 +33,8 @@
             v-model="coords"
             :google="google"
             :emirate="emirateDetails"
-            :areas="areas"
-            :buildings="buildings"
+            :areas="emirateAreas"
+            :buildings="UAE_Buildings"
             @area-changed="onAreaChange"
         />
     </div>
@@ -83,14 +83,14 @@
         // Data
         google = null as google | null;
         apiKey = 'AIzaSyDCWGWQFBHWRuqhkSjWQFb6Sf7T8jm7Y6I';
-        options = {
-            libraries: [ 'geometry' ],
-        } as LoaderOptions;
+        options = { libraries: [ 'geometry' ] } as LoaderOptions;
 
-        emirates = emirates as Record<EmirateKey, IEmirate>
         emirate = 'dubai' as EmirateKey;
-        buildings = buildings as Record<number, IBuilding>;
-        boundaries = boundaries as IBoundaries;
+
+        // JSONS
+        UAE_Emirates = emirates as Record<EmirateKey, IEmirate>
+        UAE_Buildings = buildings as Record<number, IBuilding>;
+        UAE_Boundaries = boundaries as IBoundaries;
 
         coords = {
             lat: null,
@@ -98,12 +98,19 @@
         }
 
         // Computed
-        get areas(): IArea[] {
-            return uae[this.emirate].sort((a, b) => ((a.name_en > b.name_en) ? 1 : -1));
+        get emirateAreas(): IArea[] {
+            const currentEmirateArea = uae[this.emirate] as IArea[];
+
+            return currentEmirateArea
+                .sort((a, b) => ((a.name_en > b.name_en) ? 1 : -1))
+                .map(area => {
+                    area.custom_format = area.location_path_en.reverse().join(', ');
+                    return area;
+                });
         }
 
         get emirateDetails(): IEmirate {
-            return this.emirates[this.emirate.toLowerCase()];
+            return this.UAE_Emirates[this.emirate.toLowerCase()];
         }
 
         // Created hook
@@ -115,6 +122,7 @@
             this.google = gMaps;
         }
 
+        // TEST METHODS
         setNewCoords() {
                 this.coords.lat = 25.510498;
                 this.coords.lng = 55.57039;
