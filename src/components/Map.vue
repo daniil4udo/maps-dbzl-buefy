@@ -38,6 +38,7 @@
 <script lang="ts">
     import { google } from 'google-maps';
     import has from 'lodash/has';
+    import isNil from 'lodash/isNil';
     import { Component, Prop, Ref, Watch, Emit, VModel, Vue } from 'vue-property-decorator';
 
     import Tooltip from '@/components/Tooltip.vue';
@@ -155,21 +156,22 @@
         }
 
         @VModel({ type: Object, default: () => ({ lat: null, lng: null }) }) center!: ILatLng
-        // @Watch('center', { immediate: false, deep: true })
-        // onCenterChanged(val: ILatLng) {
-        //     if ((val.lat != null) && (val.lng != null)) {
-        //         const mapCenter = new this.google.maps.LatLng(
-        //             val.lat,
-        //             val.lng,
-        //         );
 
-        //         this.mapInstance.panTo(mapCenter);
-        //     }
-        // }
+        @Watch('center', { immediate: false, deep: true })
+        onCenterChanged(newV: ILatLng) {
+            if (!isNil(newV.lat) && !isNil(newV.lng)) {
+                const mapCenter = new this.google.maps.LatLng(
+                    newV.lat,
+                    newV.lng,
+                );
+
+                this.mapInstance.panTo(mapCenter);
+            }
+        }
 
         @Watch('emirate', { immediate: false, deep: true })
         onEmirateChange(val: IEmirate, oldVal: IEmirate) {
-            if (val != null && val.name_en !== oldVal.name_en) {
+            if (!isNil(val) && val.name_en !== oldVal.name_en) {
                 const mapCenter = new this.google.maps.LatLng(
                     val.coords[1],
                     val.coords[0],
@@ -181,7 +183,7 @@
         }
 
         mounted() {
-            if (this.google != null) {
+            if (!isNil(this.google)) {
                 this.initGoogleMaps();
                 this.addEventListeners();
             }
@@ -231,7 +233,7 @@
         }
 
         setUserLocation() {
-            if (this.center.lat != null && this.center.lng != null) {
+            if (!isNil(this.center.lat) && !isNil(this.center.lng)) {
                 this.latLngInstance = new this.google.maps.LatLng(
                     this.center.lat,
                     this.center.lng,
@@ -276,9 +278,12 @@
         setCoordinates({ lat, lng }: google.maps.LatLng) {
             // const lat = (typeof e.lat === 'function' ? e.lat() : e.lat) as number;
             // const lng = (typeof e.lng === 'function' ? e.lng() : e.lng) as number;
-
-            this.center.lat = lat();
-            this.center.lng = lng();
+            if (this.center.lat !== lat()) {
+                this.center.lat = lat();
+            }
+            if (this.center.lng !== lng()) {
+                this.center.lng = lng();
+            }
 
             // TODO: When setting location from LS emirate stays
             // window.localStorage.setItem('location', JSON.stringify({
