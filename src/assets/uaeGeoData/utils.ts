@@ -38,7 +38,9 @@ export function findEmirate<T extends IArea & IBuilding>(payload: T, areas: Reco
         : payload;
 
     if (area && area.location_path_en) {
-        return emirateMap(area.location_path_en[1]);
+        const emirateKey = area.location_path_en[1].toLowerCase().replace(' ', '');
+
+        return emirateMap(emirateKey);
     }
 
     return null;
