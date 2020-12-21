@@ -12,8 +12,10 @@
             </b-radio-button>
         </b-field>
 
+        {{ area }}
         <Autocomplete
             v-if="emirate"
+            v-model="area"
             field="name_en"
             label="Chose Area"
             placeholder="Barsha 1"
@@ -22,13 +24,15 @@
             @input="option => onAutocompleteInput(option, 'area')"
         />
 
+        {{ building }}
         <Autocomplete
             v-if="emirate"
+            v-model="building"
             field="name_en"
             label="Chose Building"
             placeholder="Meera"
             :emirate="emirate"
-            :data="emirateBuildings"
+            :data="UAE_Buildings"
             @input="option => onAutocompleteInput(option, 'building')"
         />
 
@@ -40,7 +44,7 @@
             :google="google"
             :emirate="emirateDetails"
             :areas="emirateAreas"
-            :buildings="emirateBuildings"
+            :buildings="UAE_Buildings"
             :area="area"
             :building="building"
         />
@@ -52,32 +56,13 @@
     import { isNil } from 'lodash';
     import { Component, Vue } from 'vue-property-decorator';
 
-    import emirates from '@/assets/uaeGeoData/areas.json';
-    import boundaries from '@/assets/uaeGeoData/boundaries.json';
-    import buildings from '@/assets/uaeGeoData/buildings.json';
+    import { areas } from '@/assets/uaeGeoData/areas';
+    import { buildings } from '@/assets/uaeGeoData/buildings';
+    import UAE from '@/assets/uaeGeoData/uae.json';
+    import { findEmirate, findNeighbourhood } from '@/assets/uaeGeoData/utils';
     import Autocomplete from '@/components/Autocomplete.vue';
     import DmcMap from '@/components/Map.vue';
-    import { EmirateKey, IEmirate, IArea, IBuilding, IBoundaries } from '@/components/models';
-
-    import abudhabi from '../assets/uaeGeoData/abuDhabi/areas.json';
-    import ajman from '../assets/uaeGeoData/ajman/areas.json';
-    import alain from '../assets/uaeGeoData/alAin/areas.json';
-    import dubai from '../assets/uaeGeoData/dubai/areas.json';
-    import fujairah from '../assets/uaeGeoData/fujairah/areas.json';
-    import rasalkhaimah from '../assets/uaeGeoData/rasAlKhaimah/areas.json';
-    import sharjah from '../assets/uaeGeoData/sharjah/areas.json';
-    import ummalquawain from '../assets/uaeGeoData/ummAlQuawain/areas.json';
-
-    const uae = {
-        abudhabi,
-        ummalquawain,
-        ajman,
-        alain,
-        dubai,
-        fujairah,
-        rasalkhaimah,
-        sharjah,
-    };
+    import { EmirateKey, IEmirate, IArea, IBuilding, Emirates, Areas, Buildings } from '@/components/models';
 
     @Component({
         components: {
@@ -86,18 +71,20 @@
         },
     })
     export default class Address extends Vue {
-        // Data
+        // GMap data
         google = null as google | null;
         apiKey = 'AIzaSyDCWGWQFBHWRuqhkSjWQFb6Sf7T8jm7Y6I';
         options = { libraries: [ 'geometry', 'places' ] } as LoaderOptions;
 
+        //
         emirate = 'dubai' as EmirateKey;
-        area = null
-        building = null
+        area = null as IArea;
+        building = null as IBuilding;
 
-        // JSONS
-        UAE_Emirates = emirates as Record<EmirateKey, IEmirate>
-        UAE_Boundaries = boundaries as IBoundaries;
+        // JSONs
+        UAE_Emirates = UAE.emirates as Readonly<Emirates>
+        UAE_Areas = areas as Readonly<Record<EmirateKey, Areas>>
+        UAE_Buildings = buildings as Readonly<Buildings>
 
         coords = {
             lat: null,
@@ -105,36 +92,8 @@
         }
 
         // Computed
-        get emirateAreas(): Record<string, IArea> {
-            const currentEmirateArea = uae[this.emirate] as IArea[];
-
-            return currentEmirateArea
-                // .sort((a, b) => ((a.name_en > b.name_en) ? 1 : -1))
-                .map(area => {
-                    area.custom_format = area.location_path_en.reverse().join(', ');
-                    return area;
-                })
-                .reduce((e, o) => Object.assign(e, { [o.value]: o }), {});
-        }
-
-        get emirateBuildings(): Record<string, IBuilding> {
-            // const computedBuildings = {} as Partial<Record<string, IBuilding>>;
-
-            // for (const key in buildings as Record<string, IBuilding>) {
-            //     if (true) {
-            //         const custom_format = this.emirateAreas[buildings[key].neighbourhood_id]
-            //             ? this.emirateAreas[buildings[key].neighbourhood_id].custom_format
-            //             : null;
-
-            //         Object.assign(
-            //             computedBuildings,
-            //             { [key]: { ...buildings[key], custom_format } },
-            //         );
-            //     }
-            // }
-
-            // return computedBuildings;
-            return buildings;
+        get emirateAreas() {
+            return this.UAE_Areas[this.emirate.toLowerCase()];
         }
 
         get emirateDetails(): IEmirate {
@@ -157,16 +116,25 @@
         }
 
         // Methods
-        onAutocompleteInput(payload: IBuilding, scope: string) {
+        onAutocompleteInput<T extends IArea & IBuilding>(payload: T, scope: 'area' | 'building') {
             if (isNil(payload)) {
                 return;
             }
 
+            const emirate = findEmirate(payload, this.UAE_Areas);
+
+            if (this.emirate !== emirate.key) {
+                this.emirate = emirate.key;
+            }
+
             if (scope === 'building') {
-                this.building = payload;
+                const relatedArea = findNeighbourhood(payload.neighbourhood_id, this.UAE_Areas);
+
+                this.building = payload as IBuilding;
+                this.area = relatedArea;
             }
             else if (scope === 'area') {
-                this.area = payload;
+                this.area = payload as IArea;
             }
         }
     }
