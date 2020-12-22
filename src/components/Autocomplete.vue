@@ -2,16 +2,18 @@
     <b-field
         expanded
         :label="label"
+        :disabled="disabled"
     >
         <b-autocomplete
             v-model="inputModel"
             :placeholder="placeholder"
-            open-on-focus
-            :data="filteredDataObj"
-            :field="field"
             clearable
             expanded
-            @select="option => (selected = option)"
+            open-on-focus
+            :data="filteredData"
+            :disabled="disabled"
+            :field="field"
+            @select="onAutocompleteSelect"
         >
             <template slot-scope="props">
                 <div class="media">
@@ -28,18 +30,20 @@
 
 <script lang="ts">
     import Fuse from 'fuse.js';
+    import { isNil } from 'lodash';
     import has from 'lodash/has';
-    import { Component, Vue, Prop, VModel } from 'vue-property-decorator';
+    import { Component, Vue, Prop, VModel, Watch } from 'vue-property-decorator';
 
     import { EmirateKey, IArea, IBuilding } from '@/components/models';
 
     @Component({
         name: 'GoogleMapAutocomplete',
     })
-    export default class GoogleMapAutocomplete<T extends IArea | IBuilding> extends Vue {
+    export default class GoogleMapAutocomplete<T extends IArea & IBuilding> extends Vue {
         @Prop({ type: String, default: () => '' }) field!: keyof T
         @Prop({ type: String, default: () => '' }) label!: string
         @Prop({ type: String, default: () => '' }) placeholder!: string
+        @Prop({ type: Boolean, default: () => false }) disabled!: boolean
 
         @Prop({ type: String, default: () => null }) emirate!: EmirateKey
 
@@ -48,7 +52,7 @@
 
         inputModel = '';
 
-        @VModel({ type: Object, default: () => null }) selected!: Record<string, T>
+        @VModel({ type: Object, default: () => null }) selected!: T
 
         get dataIndex() {
             return new Fuse(Object.values(this.data), {
@@ -59,14 +63,27 @@
             });
         }
 
-        get filteredDataObj() {
-            return this.findMatch(this.inputModel).map(e => e.item);
+        get filteredData() {
+            return this.findMatch(this.inputModel);
+        }
+
+        @Watch('selected', { immediate: false, deep: true })
+        onAutocompleteSelect(newV: T) {
+            this.selected = newV;
+
+            if (!isNil(this.selected) && this.inputModel !== this.selected.name_en) {
+                this.inputModel = this.selected.name_en;
+            }
+
+            this.$emit('autocomplete-changed', newV);
         }
 
         findMatch(str: string) {
             try {
                 if (typeof str === 'string') {
-                    return this.dataIndex.search(str);
+                    return this.dataIndex
+                        .search(str)
+                        .map(e => e.item);
                 }
 
                 console.error(`[Autocomplete]: Search string has to be type 'string'. Got ${typeof str}`);
@@ -79,7 +96,7 @@
                     if (has(this.data, value)) {
                         if (String(this.data[value]?.name_en).toLowerCase().includes(this.inputModel.toLowerCase())) {
                             // IMPORTANT: assignig it to item prop: mocking Fuse API
-                            filteredData.push({ item: { ...this.data[value], value } });
+                            filteredData.push({ ...this.data[value], value });
                         }
                     }
                 }
