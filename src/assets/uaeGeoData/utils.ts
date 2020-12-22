@@ -33,14 +33,19 @@ export function findNeighbourhood(neighbourhood_id: number, areas: Record<Emirat
 }
 
 export function findEmirate<T extends IArea & IBuilding>(payload: T, areas: Record<EmirateKey, Areas>) {
-    const area = (payload.neighbourhood_id)
+    const area = (has(payload, 'neighbourhood_id') && payload.neighbourhood_id)
         ? findNeighbourhood(payload.neighbourhood_id, areas)
         : payload;
 
     if (area && area.location_path_en) {
-        const emirateKey = area.location_path_en[1].toLowerCase().replace(' ', '');
+        const emirateIndex = area.location_path_en[0] === 'UAE'
+            ? 1
+            : area.location_path_en.length - 2;
+        const emirateKey = area.location_path_en[emirateIndex].toLowerCase().replaceAll(' ', '');
 
-        return emirateMap(emirateKey);
+        return emirateMap(emirateKey) || (() => {
+            throw new Error('Emirate not found. Something must have gone wrong');
+        })();
     }
 
     return null;
