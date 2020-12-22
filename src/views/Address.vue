@@ -12,13 +12,14 @@
             </b-radio-button>
         </b-field>
 
-        {{ area }}
+        {{ area && area.name_en }}
         <Autocomplete
             v-if="emirate"
             v-model="area"
             field="name_en"
             label="Chose Area"
-            placeholder="Barsha 1"
+            :placeholder="areaExample"
+            :disabled="building != null"
             :emirate="emirate"
             :data="emirateAreas"
             @input="option => onAutocompleteInput(option, 'area')"
@@ -92,12 +93,19 @@
         }
 
         // Computed
-        get emirateAreas() {
+        get emirateAreas(): Areas {
             return this.UAE_Areas[this.emirate.toLowerCase()];
         }
 
         get emirateDetails(): IEmirate {
             return this.UAE_Emirates[this.emirate.toLowerCase()];
+        }
+
+        get areaExample() {
+            const v = Object.values(this.emirateAreas);
+            const i = Math.floor(Math.random() * (v.length - 0));
+
+            return v[i].name_en;
         }
 
         // Created hook
@@ -111,8 +119,10 @@
 
         // TEST METHODS
         setNewCoords() {
-                this.coords.lat = 25.510498;
-                this.coords.lng = 55.57039;
+                // this.coords.lat = 25.510498;
+                // this.coords.lng = 55.57039;
+
+                this.building = { name_en: 'Meera Tower', is_in_migrated_neighbourhood: true, coords: [ 55.255582, 25.183397 ], name_ar: 'برج ميره', neighbourhood_id: 62229, value: 6424, custom_format: 'Al Habtoor City, Business Bay, Dubai, UAE' };
         }
 
         // Methods
@@ -123,19 +133,25 @@
 
             const emirate = findEmirate(payload, this.UAE_Areas);
 
-            if (this.emirate !== emirate.key) {
+            if (emirate && this.emirate !== emirate.key) {
                 this.emirate = emirate.key;
             }
 
             if (scope === 'building') {
                 const relatedArea = findNeighbourhood(payload.neighbourhood_id, this.UAE_Areas);
 
-                this.building = payload as IBuilding;
+                // As long as area and building are v-models, no need to set it expicitly
+                // only update are when building is changed
                 this.area = relatedArea;
             }
-            else if (scope === 'area') {
-                this.area = payload as IArea;
-            }
         }
+
+    // onAreaChanged(area: IPolygon<IArea>) {
+    //     if (this.area?.value !== area?.value) {
+    //         const relatedArea = findNeighbourhood(area.value, this.UAE_Areas);
+
+    //         this.area = relatedArea;
+    //     }
+    // }
     }
 </script>
