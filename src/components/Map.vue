@@ -65,8 +65,9 @@
 
         @Prop({ type: Object }) readonly emirate!: IEmirate;
         @Prop({ type: Object }) area!: IArea;
-        @Prop({ type: Object }) readonly areas!: Record<string, IArea>;
         @Prop({ type: Object }) building!: IBuilding
+
+        @Prop({ type: Object }) readonly areas!: Record<string, IArea>;
         @Prop({ type: Object }) readonly buildings!: Record<number, IBuilding>
 
         @Ref() readonly googleMap!: HTMLDivElement;
@@ -177,20 +178,6 @@
             }
         }
 
-        @Watch('area', { immediate: false, deep: true })
-        onAreaChanged(newV: IArea) {
-            if (!isNil(newV && newV.value)) {
-                this.setNeighbourhood(newV.value);
-            }
-        }
-
-        @Watch('building', { immediate: false, deep: true })
-        onBuildingChanged(newV: IBuilding) {
-            if (!isNil(newV && newV.value)) {
-                this.setBuilding(newV.value);
-            }
-        }
-
         @Watch('emirate', { immediate: false, deep: true })
         onEmirateChange(val: IEmirate, oldVal: IEmirate) {
             if (!isNil(val) && val.name_en !== oldVal.name_en) {
@@ -201,6 +188,20 @@
 
                 this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomEmirate);
                 this.mapInstance.panTo(mapCenter);
+            }
+        }
+
+        @Watch('area', { immediate: false, deep: true })
+        onAreaChanged(newV: IArea) {
+            if (!isNil(newV?.value)) {
+                this.setNeighbourhood(newV.value);
+            }
+        }
+
+        @Watch('building', { immediate: false, deep: true })
+        onBuildingChanged(newV: IBuilding) {
+            if (!isNil(newV?.value)) {
+                this.setBuilding(newV.value);
             }
         }
 
@@ -384,10 +385,6 @@
             this.updateArea(newArea);
         }
 
-        locateEmirate() {
-
-        }
-
         locatePoint(e: google.maps.LatLng, o?: IArea | IPolygon<IArea>) {
             this.areaContainingPoint(e, o);
 
@@ -529,12 +526,12 @@
 
         &::after {
             position: absolute;
-            top: 43%;
+            top: calc(50%);
             left: 50%;
-            width: 25px;
-            height: 41px;
-            content: ' ';
-            background-image: url('http://maps.gstatic.com/mapfiles/markers2/marker.png');
+            // width: 25px;
+            height: 35px;
+            content: '📍';
+            // background-image: url('http://maps.gstatic.com/mapfiles/markers2/marker.png');
             background-size: cover;
             transform: translate(-50%, -50%);
         }
