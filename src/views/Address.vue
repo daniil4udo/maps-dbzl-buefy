@@ -58,7 +58,7 @@
     import { areas } from '@/assets/uaeGeoData/areas';
     import { buildings } from '@/assets/uaeGeoData/buildings';
     import AE from '@/assets/uaeGeoData/uae.json';
-    import { findEmirate, findNeighbourhood } from '@/assets/uaeGeoData/utils';
+    import { findEmirate, findNeighbourhoodById } from '@/assets/uaeGeoData/utils';
     import Autocomplete from '@/components/Autocomplete.vue';
     import DmcMap from '@/components/Map.vue';
     import { EmirateKey, IEmirate, IArea, IBuilding, Emirates, Areas, Buildings } from '@/components/models';
@@ -138,7 +138,7 @@
             }
 
             if (scope === 'building') {
-                const relatedArea = findNeighbourhood(payload.neighbourhood_id, this.AE_Areas);
+                const relatedArea = findNeighbourhoodById(payload.neighbourhood_id, this.AE_Areas);
 
                 // As long as area and building are v-models, no need to set it expicitly
                 // only update are when building is changed
@@ -148,7 +148,7 @@
 
     // onAreaChanged(area: IPolygon<IArea>) {
     //     if (this.area?.value !== area?.value) {
-    //         const relatedArea = findNeighbourhood(area.value, this.AE_Areas);
+    //         const relatedArea = findNeighbourhoodById(area.value, this.AE_Areas);
 
     //         this.area = relatedArea;
     //     }

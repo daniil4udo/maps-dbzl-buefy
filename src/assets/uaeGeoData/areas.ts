@@ -1,6 +1,6 @@
 import reduce from 'lodash/reduce';
 
-import { addCustomFormat } from '@/assets/uaeGeoData/utils';
+import { assignCustomFormat } from '@/assets/uaeGeoData/utils';
 import { IArea, EmirateKey, Areas } from '@/components/models';
 
 import abudhabi from './abudhabi/areas.json';
@@ -29,7 +29,7 @@ export const areas = reduce(
             // Mutating curr to add new prop
             const area: Areas = curr
                 .reduce((a, c) => {
-                    addCustomFormat(c, c); // add custom_format prop
+                    assignCustomFormat(c); // add custom_format prop
 
                     return Object.assign(a, { [c.value]: c });
                 }, {}); // key by value prop

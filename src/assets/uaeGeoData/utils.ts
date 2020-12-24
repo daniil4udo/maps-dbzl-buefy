@@ -1,3 +1,4 @@
+import get from 'lodash/get';
 import has from 'lodash/has';
 import isNil from 'lodash/isNil';
 
@@ -10,20 +11,21 @@ import {
     IBuilding,
 } from '@/components/models';
 
-export function addCustomFormat<T>(target: T, area: IArea, locate = 'en'): T & { custom_format: string } {
-    const areaPath: string[] = area[`location_path_${locate}`];
+export function assignCustomFormat<T extends object>(target: T, area?: IArea, locate = 'en'): T & { custom_format: string } {
+    // const areaPath: string[] = (isNil(area) ? target : area)[`location_path_${locate}`];
+    const areaPath = get(area || target, `location_path_${locate}`, [ 'UAE' ]) as string[];
 
     return Object.assign(target, {
         custom_format: [ ...areaPath ].reverse().join(', '),
     });
 }
 
-export function findNeighbourhood(neighbourhood_id: number, areas: Record<EmirateKey, Areas>): IArea | null {
+export function findNeighbourhoodById(neighbourhood_id: number, areas: Record<EmirateKey, Areas>): IArea | null {
     for (const emirate in areas) {
         if (has(areas, emirate)) {
             const emirateAreas: Areas = areas[emirate];
 
-            if (has(emirateAreas, neighbourhood_id) && !isNil(emirateAreas[neighbourhood_id])) {
+            if (!isNil(emirateAreas[neighbourhood_id])) {
                 return emirateAreas[neighbourhood_id];
             }
         }
@@ -32,17 +34,22 @@ export function findNeighbourhood(neighbourhood_id: number, areas: Record<Emirat
     return null;
 }
 
+export function emirateNameToKey(e: EmirateName): EmirateKey {
+    return e.toLowerCase().replaceAll(' ', '') as EmirateKey;
+}
+
 export function findEmirate<T extends IArea & IBuilding>(payload: T, areas: Record<EmirateKey, Areas>) {
-    const area = (has(payload, 'neighbourhood_id') && payload.neighbourhood_id)
-        ? findNeighbourhood(payload.neighbourhood_id, areas)
+    const area = isNil(payload.neighbourhood_id)
+        ? findNeighbourhoodById(payload.neighbourhood_id, areas)
         : payload;
 
-    if (area && area.location_path_en) {
+    if (area && !isNil(area.location_path_en)) {
         const emirateIndex = area.location_path_en[0] === 'UAE'
-            ? 1
-            : area.location_path_en.length - 2;
-        const emirateKey = area.location_path_en[emirateIndex].toLowerCase().replaceAll(' ', '');
+            ? 1 // next comes emirate name
+            : area.location_path_en.length - 2; // if string is reversed - then previous
+        const emirateKey = emirateNameToKey(area.location_path_en[emirateIndex] as EmirateName);
 
+        // TODO: clean remove throw after good testing
         return emirateMap(emirateKey) || (() => {
             throw new Error('Emirate not found. Something must have gone wrong');
         })();
@@ -52,7 +59,7 @@ export function findEmirate<T extends IArea & IBuilding>(payload: T, areas: Reco
 }
 
 // TODO: make it less ugly
-function emirateMap(emirate: EmirateName): { readonly key: EmirateKey; readonly name: EmirateName; readonly value: EmirateValue } {
+function emirateMap(emirate: EmirateKey): { readonly key: EmirateKey; readonly name: EmirateName; readonly value: EmirateValue } {
     return ({
         dubai: {
             key: 'dubai' as EmirateKey,
