@@ -21,10 +21,10 @@ const _areas = {
     rasalkhaimah,
     sharjah,
     ummalqawain,
-} as Record<EmirateKey, IArea[]>;
+};
 
 export const areas = reduce(
-        _areas,
+        _areas as unknown as Record<EmirateKey, IArea[]>,
         (acc, curr, emirateKey: EmirateKey) => {
             // Mutating curr to add new prop
             const area: Areas = curr
@@ -36,8 +36,8 @@ export const areas = reduce(
 
             return Object.assign(acc, { [emirateKey]: area });
         },
-        {},
-) as Record<EmirateKey, Areas>;
+        {} as Record<EmirateKey, Areas>,
+);
 
 export default {
     ...areas,

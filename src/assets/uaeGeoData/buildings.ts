@@ -1,14 +1,14 @@
 import reduce from 'lodash/reduce';
 
 import { addCustomFormat, findNeighbourhood } from '@/assets/uaeGeoData/utils';
-import { Buildings, IBuilding } from '@/components/models';
+import { Buildings } from '@/components/models';
 
 import { areas } from './areas';
 import _buildings from './buildings.json';
 
 export const buildings = reduce(
-        _buildings,
-        (acc, curr: IBuilding, buildingVal) => {
+        _buildings as unknown as Buildings,
+        (acc, curr, buildingVal) => {
             const neighbourhood = findNeighbourhood(curr.neighbourhood_id, areas);
 
             // Add value to the building object for easier lookup after
@@ -22,8 +22,8 @@ export const buildings = reduce(
 
             return Object.assign(acc, { [buildingVal]: building });
         },
-        {},
-) as Buildings;
+        {} as Buildings,
+);
 
 export default {
     ...buildings,
