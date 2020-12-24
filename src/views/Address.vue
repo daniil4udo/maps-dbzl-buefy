@@ -2,7 +2,7 @@
     <div class="container">
         <b-field label="Emirate">
             <b-radio-button
-                v-for="(val, key) in UAE_Emirates"
+                v-for="(val, key) in AE_Emirates"
                 :key="key"
                 v-model="emirate"
                 :native-value="key"
@@ -12,7 +12,7 @@
             </b-radio-button>
         </b-field>
 
-        {{ area && area.name_en }}
+        {{ area }}
         <Autocomplete
             v-if="emirate"
             v-model="area"
@@ -33,11 +33,11 @@
             label="Chose Building"
             placeholder="Meera"
             :emirate="emirate"
-            :data="UAE_Buildings"
+            :data="AE_Buildings"
             @input="option => onAutocompleteInput(option, 'building')"
         />
 
-        {{ coords }}
+        {{ coords.lat }},{{ coords.lng }}
         <b-button @click="setNewCoords" v-text="'Set New Coords'" />
         <DmcMap
             v-if="google"
@@ -45,9 +45,7 @@
             :google="google"
             :emirate="emirateDetails"
             :areas="emirateAreas"
-            :buildings="UAE_Buildings"
-            :area="area"
-            :building="building"
+            :buildings="AE_Buildings"
         />
     </div>
 </template>
@@ -59,7 +57,7 @@
 
     import { areas } from '@/assets/uaeGeoData/areas';
     import { buildings } from '@/assets/uaeGeoData/buildings';
-    import UAE from '@/assets/uaeGeoData/uae.json';
+    import AE from '@/assets/uaeGeoData/uae.json';
     import { findEmirate, findNeighbourhood } from '@/assets/uaeGeoData/utils';
     import Autocomplete from '@/components/Autocomplete.vue';
     import DmcMap from '@/components/Map.vue';
@@ -78,14 +76,15 @@
         options = { libraries: [ 'geometry', 'places' ] } as LoaderOptions;
 
         //
+        country = 'AE' // asISO2
         emirate = 'dubai' as EmirateKey;
         area = null as IArea;
         building = null as IBuilding;
 
         // JSONs
-        UAE_Emirates = UAE.emirates as Readonly<Emirates>
-        UAE_Areas = areas as Readonly<Record<EmirateKey, Areas>>
-        UAE_Buildings = buildings as Readonly<Buildings>
+        AE_Emirates = AE.emirates as unknown as Readonly<Emirates>
+        AE_Areas = areas as unknown as Readonly<Record<EmirateKey, Areas>>
+        AE_Buildings = buildings as unknown as Readonly<Buildings>
 
         coords = {
             lat: null,
@@ -94,11 +93,11 @@
 
         // Computed
         get emirateAreas(): Areas {
-            return this.UAE_Areas[this.emirate.toLowerCase()];
+            return this.AE_Areas[this.emirate.toLowerCase()];
         }
 
         get emirateDetails(): IEmirate {
-            return this.UAE_Emirates[this.emirate.toLowerCase()];
+            return this.AE_Emirates[this.emirate.toLowerCase()];
         }
 
         get areaExample() {
@@ -122,7 +121,7 @@
                 // this.coords.lat = 25.510498;
                 // this.coords.lng = 55.57039;
 
-                this.building = { name_en: 'Meera Tower', is_in_migrated_neighbourhood: true, coords: [ 55.255582, 25.183397 ], name_ar: 'برج ميره', neighbourhood_id: 62229, value: 6424, custom_format: 'Al Habtoor City, Business Bay, Dubai, UAE' };
+                this.building = { name_en: 'Meera Tower', is_in_migrated_neighbourhood: true, coords: [ 55.255582, 25.183397 ], name_ar: 'برج ميره', neighbourhood_id: 62229, value: 6424, custom_format: 'Al Habtoor City, Business Bay, Dubai, AE' };
         }
 
         // Methods
@@ -131,14 +130,15 @@
                 return;
             }
 
-            const emirate = findEmirate(payload, this.UAE_Areas);
+            const emirate = findEmirate(payload, this.AE_Areas);
 
+            // Extract emirate from the payload and set as new
             if (emirate && this.emirate !== emirate.key) {
                 this.emirate = emirate.key;
             }
 
             if (scope === 'building') {
-                const relatedArea = findNeighbourhood(payload.neighbourhood_id, this.UAE_Areas);
+                const relatedArea = findNeighbourhood(payload.neighbourhood_id, this.AE_Areas);
 
                 // As long as area and building are v-models, no need to set it expicitly
                 // only update are when building is changed
@@ -148,7 +148,7 @@
 
     // onAreaChanged(area: IPolygon<IArea>) {
     //     if (this.area?.value !== area?.value) {
-    //         const relatedArea = findNeighbourhood(area.value, this.UAE_Areas);
+    //         const relatedArea = findNeighbourhood(area.value, this.AE_Areas);
 
     //         this.area = relatedArea;
     //     }
