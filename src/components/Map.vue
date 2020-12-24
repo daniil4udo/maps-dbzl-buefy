@@ -483,16 +483,21 @@
 
         // In case we decide move away from Google Elevation API
         // handle other request in here
-        getElevationResponse(results: Partial<google.maps.ElevationResult>[], status: google.maps.ElevationStatus): number | null {
+        async getElevationResponse(results: Partial<google.maps.ElevationResult>[], status: google.maps.ElevationStatus): number | null {
+            // let res = await fetch(`https://api.airmap.com/elevation/v1/ele?points=${this.center.lat},${this.center.lng}`);
+            // res = await res.json();
+            // return res.data ? res.data[0] : null;
+
+            // Google's Elevation response
             return status === this.google.maps.ElevationStatus.OK && results[0]
                 ? results[0].elevation
                 : null;
         }
 
         // TODO: Too many time got called, have to fix it
-        handleElevationResponse(results: Partial<google.maps.ElevationResult>[], status: google.maps.ElevationStatus) {
+        async handleElevationResponse(results: Partial<google.maps.ElevationResult>[], status: google.maps.ElevationStatus) {
             // querySelectorPin.classList.add('outside-polygons');
-            const elevetioResponse = this.getElevationResponse(results, status);
+            const elevetioResponse = await this.getElevationResponse(results, status);
 
             if (!isNil(elevetioResponse)) {
                 elevetioResponse > 0
