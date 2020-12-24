@@ -53,7 +53,7 @@
     // const dbzMapError = 'dbz.map.error';
 
     @Component({
-        name: 'DmcMap',
+        name: 'Map',
         components: {
             Tooltip,
         },
@@ -61,8 +61,8 @@
     export default class Map extends Vue {
         // googl instance as in window.google
         @Prop({ required: true }) readonly google!: google;
-        @Prop({ type: String, default: () => 'UAE' }) country!: string;
 
+        @Prop({ type: String, validator: c => /^[a-z]{2}$/i.test(c), default: () => 'AE' }) country!: string;
         @Prop({ type: Object }) readonly emirate!: IEmirate;
         @Prop({ type: Object }) area!: IArea;
         @Prop({ type: Object }) building!: IBuilding
@@ -130,7 +130,7 @@
             loading: 'Finding your location...',
             water: 'Are you scuba diving?',
             land: 'Lost in the desert?',
-            generic: 'Do you need a GPS, mate?',
+            generic: 'Do you need a GPS, dude?',
         }
 
         // Computed
@@ -167,8 +167,9 @@
         @VModel({ type: Object, default: () => ({ lat: null, lng: null }) }) center!: ILatLng
 
         @Watch('center', { immediate: false, deep: true })
-        onCenterChanged(newV: ILatLng) {
-            if (!isNil(newV.lat) && !isNil(newV.lng)) {
+        onCenterChanged(newV: ILatLng, oldV: ILatLng) {
+            // Needed for v-model work properly
+            if (!isNil(newV.lat) && !isNil(newV.lng) && JSON.stringify(newV) !== JSON.stringify(oldV)) {
                 const mapCenter = new this.google.maps.LatLng(
                     newV.lat,
                     newV.lng,
@@ -186,7 +187,7 @@
                     val.coords[0],
                 );
 
-                this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomEmirate);
+                this.setZoom(this.mapOptions.zoomEmirate);
                 this.mapInstance.panTo(mapCenter);
             }
         }
@@ -216,7 +217,8 @@
         }
 
         initGoogleMaps() {
-            this.google.maps.visualRefresh = true;
+            // TODO: findout a way to enable visual refresh
+            // this.google.maps.visualRefresh = true;
 
             if (this.googleMap instanceof HTMLDivElement) {
                 this.mapInstance = new this.google.maps.Map(this.googleMap, this.mapOptions);
@@ -239,15 +241,22 @@
         }
 
         // Polygon handlers
-        setMapPolygon(e: IPolygon<IArea>) {
+        setMapPolygon(polygon: IPolygon<IArea>) {
             if (this.boundaries) {
                 this.boundaries.setMap(null);
             }
-            this.boundaries = e.boundaries;
 
-            if (e.value) {
-                this.boundaries.setMap(this.mapInstance);
+            if (polygon) {
+                this.boundaries = polygon.boundaries;
+
+                if (polygon.value) {
+                    this.boundaries.setMap(this.mapInstance);
+                }
             }
+        }
+
+        setZoom(increment = 0) {
+            this.mapInstance.setZoom(this.mapOptions.zoom + increment);
         }
 
         // Tooltip handler
@@ -280,7 +289,7 @@
                     timeout: 5000,
                     maximumAge: 0,
                 };
-                const getLocation: PositionCallback = async ({ coords }) => {
+                const getLocation: PositionCallback = ({ coords }) => {
                     this.latLngInstance = new this.google.maps.LatLng(coords.latitude, coords.longitude);
                 };
                 const getError: PositionErrorCallback = err => {
@@ -292,28 +301,17 @@
             }
 
             else {
-                this.latLngInstance = null;
-
-                return this.latLngInstance;
+                return null;
             }
         }
 
         setCoordinates({ lat, lng }: google.maps.LatLng) {
-            // const lat = (typeof e.lat === 'function' ? e.lat() : e.lat) as number;
-            // const lng = (typeof e.lng === 'function' ? e.lng() : e.lng) as number;
             if (this.center.lat !== lat()) {
                 this.center.lat = lat();
             }
             if (this.center.lng !== lng()) {
                 this.center.lng = lng();
             }
-
-            // TODO: When setting location from LS emirate stays
-            // window.localStorage.setItem('location', JSON.stringify({
-            //     country: 'uae',
-            //     ...this.emirate && { emirate: this.emirate.name_en },
-            //     area: this.foundAreaPoint ? this.foundAreaPoint.value : null,
-            // }));
 
             window.localStorage.setItem('lat', JSON.stringify(lat()));
             window.localStorage.setItem('lng', JSON.stringify(lng()));
@@ -329,9 +327,8 @@
             const mapCenter = new this.google.maps.LatLng(neighbourhood.coords[1], neighbourhood.coords[0]);
 
             this.mapInstance.panTo(mapCenter);
-            this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomArea);
+            this.setZoom(this.mapOptions.zoomArea);
             this.setCoordinates(mapCenter);
-
             this.locatePoint(mapCenter, neighbourhood);
         }
 
@@ -346,7 +343,7 @@
                 const mapCenter = new this.google.maps.LatLng(building.coords[1], building.coords[0]);
 
                 this.mapInstance.panTo(mapCenter);
-                this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomBuilding);
+                this.setZoom(this.mapOptions.zoomBuilding);
                 this.locatePoint(mapCenter);
                 this.setCoordinates(mapCenter);
 
@@ -362,19 +359,19 @@
         }
 
         //
-        findClosestArea(e: IPolygon<IArea>[]) {
-            const o = e.map(_e => this.google.maps.geometry.spherical.computeArea(_e.boundaries.getPath()));
-            const n = o.indexOf(Math.min(...o));
+        findClosestArea(polygons: IPolygon<IArea>[]) {
+            const o = polygons.map(polygon => this.google.maps.geometry.spherical.computeArea(polygon.boundaries.getPath()));
+            const smallesPolygonArea = o.indexOf(Math.min(...o));
 
-            return e[n];
+            return polygons[smallesPolygonArea];
         }
 
         areaContainingPoint(e: google.maps.LatLng, o?: IArea | IPolygon<IArea>) {
-            const cb = o
+            const fn = o
                 ? ({ value }) => value === o.value
                 : ({ boundaries }) => this.google.maps.geometry.poly.containsLocation(e, boundaries);
 
-            const a = this.areaPolygonInstances.filter(cb);
+            const a = this.areaPolygonInstances.filter(fn);
 
             const newArea = (a.length === 1)
                 ? a[0]
@@ -383,6 +380,8 @@
                     : null;
 
             this.updateArea(newArea);
+
+            return newArea;
         }
 
         locatePoint(e: google.maps.LatLng, o?: IArea | IPolygon<IArea>) {
@@ -393,10 +392,13 @@
                 this.setTooltipText(this.foundAreaPoint.name);
             }
             else {
+                // Remove Polygon if couldn find the location
+                this.setMapPolygon(null);
+
                 // Get some elevation data if couldn find the location
                 this.setTooltipText(this.messages.loading);
 
-                const ElevationService = new this.google.maps.ElevationService() as google.maps.ElevationService;
+                const ElevationService = new this.google.maps.ElevationService();
 
                 ElevationService.getElevationForLocations(
                     { locations: [ e ] },
@@ -442,13 +444,12 @@
         handleGoogleMapTilesLoaded() {
             // TODO: set some maps styles
             // TODO: add google maps placeholder img once tilels are loaded
-            // querySelectorTooltip.classList.remove('hidden');
 
             this.setUserLocation();
 
             const mapCenter = this.latLngInstance || this.mapOptions.center;// this.mapOptions.center;
 
-            this.mapInstance.setZoom(this.mapOptions.zoom + this.mapOptions.zoomIncrement);
+            this.setZoom(this.mapOptions.zoomIncrement);
 
             return mapCenter;
         }
@@ -458,6 +459,7 @@
             const mapCenter = this.mapInstance.getCenter();
             // querySelectorPin.classList.remove('dbz-animate-shake');
             // querySelectorPin.classList.remove('outside-polygons');
+            this.setTooltipText(this.messages.loading);
 
             return mapCenter;
         }
@@ -483,7 +485,7 @@
 
         // In case we decide move away from Google Elevation API
         // handle other request in here
-        async getElevationResponse(results: Partial<google.maps.ElevationResult>[], status: google.maps.ElevationStatus): number | null {
+        async getElevationResponse(results: Partial<google.maps.ElevationResult>[], status: google.maps.ElevationStatus): Promise<number | null> {
             // let res = await fetch(`https://api.airmap.com/elevation/v1/ele?points=${this.center.lat},${this.center.lng}`);
             // res = await res.json();
             // return res.data ? res.data[0] : null;

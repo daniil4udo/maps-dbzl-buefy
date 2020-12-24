@@ -1,8 +1,8 @@
 // type DeepReadonly<T> = { readonly [K in keyof T]: DeepReadonly<T[K]> };
 
 export interface ILatLng {
-    readonly lat: number;
-    readonly lng: number;
+    lat: number;
+    lng: number;
 }
 export type TLatLng = readonly [ ILatLng['lat'], ILatLng['lng']]
 export type TLocationPath = readonly [ 'UAE', EmirateName, ...string[] ]

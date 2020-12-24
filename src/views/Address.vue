@@ -12,7 +12,7 @@
             </b-radio-button>
         </b-field>
 
-        {{ area }}
+        <!-- {{ area }} -->
         <Autocomplete
             v-if="emirate"
             v-model="area"
@@ -25,13 +25,13 @@
             @input="option => onAutocompleteInput(option, 'area')"
         />
 
-        {{ building }}
+        <!-- {{ building }} -->
         <Autocomplete
             v-if="emirate"
             v-model="building"
             field="name_en"
             label="Chose Building"
-            placeholder="Meera"
+            placeholder="Meera Tower"
             :emirate="emirate"
             :data="AE_Buildings"
             @input="option => onAutocompleteInput(option, 'building')"
@@ -39,33 +39,36 @@
 
         {{ coords.lat }},{{ coords.lng }}
         <b-button @click="setNewCoords" v-text="'Set New Coords'" />
-        <DmcMap
+        <Map
             v-if="google"
             v-model="coords"
             :google="google"
+            :country="'AE'"
             :emirate="emirateDetails"
             :areas="emirateAreas"
             :buildings="AE_Buildings"
+            @area-changed="onAreaChanched"
         />
     </div>
 </template>
 
 <script lang="ts">
     import { Loader, LoaderOptions, google } from 'google-maps';
-    import { isNil } from 'lodash';
+    import isNil from 'lodash/isNil';
     import { Component, Vue } from 'vue-property-decorator';
 
-    import { areas } from '@/assets/uaeGeoData/areas';
-    import { buildings } from '@/assets/uaeGeoData/buildings';
-    import AE from '@/assets/uaeGeoData/uae.json';
     import { findEmirate, findNeighbourhoodById } from '@/assets/uaeGeoData/utils';
     import Autocomplete from '@/components/Autocomplete.vue';
-    import DmcMap from '@/components/Map.vue';
-    import { EmirateKey, IEmirate, IArea, IBuilding, Emirates, Areas, Buildings } from '@/components/models';
+    import Map from '@/components/Map.vue';
+    import { EmirateKey, IEmirate, IArea, IBuilding, IPolygon, Emirates, Areas, Buildings } from '@/components/models';
+
+    import { areas } from '../assets/uaeGeoData/areas';
+    import { buildings } from '../assets/uaeGeoData/buildings';
+    import { emirates } from '../assets/uaeGeoData/uae';
 
     @Component({
         components: {
-            DmcMap,
+            Map,
             Autocomplete,
         },
     })
@@ -82,7 +85,7 @@
         building = null as IBuilding;
 
         // JSONs
-        AE_Emirates = AE.emirates as unknown as Readonly<Emirates>
+        AE_Emirates = emirates as unknown as Readonly<Emirates>
         AE_Areas = areas as unknown as Readonly<Record<EmirateKey, Areas>>
         AE_Buildings = buildings as unknown as Readonly<Buildings>
 
@@ -118,10 +121,10 @@
 
         // TEST METHODS
         setNewCoords() {
-                // this.coords.lat = 25.510498;
-                // this.coords.lng = 55.57039;
+                this.coords.lat = 25.510498;
+                this.coords.lng = 55.57039;
 
-                this.building = { name_en: 'Meera Tower', is_in_migrated_neighbourhood: true, coords: [ 55.255582, 25.183397 ], name_ar: 'برج ميره', neighbourhood_id: 62229, value: 6424, custom_format: 'Al Habtoor City, Business Bay, Dubai, AE' };
+                // this.building = { name_en: 'Meera Tower', is_in_migrated_neighbourhood: true, coords: [ 55.255582, 25.183397 ], name_ar: 'برج ميره', neighbourhood_id: 62229, value: 6424, custom_format: 'Al Habtoor City, Business Bay, Dubai, AE' };
         }
 
         // Methods
@@ -146,12 +149,12 @@
             }
         }
 
-    // onAreaChanged(area: IPolygon<IArea>) {
-    //     if (this.area?.value !== area?.value) {
-    //         const relatedArea = findNeighbourhoodById(area.value, this.AE_Areas);
+        onAreaChanched(area: IPolygon<IArea>) {
+            // if (this.area?.value !== area?.value) {
+            //     const relatedArea = findNeighbourhoodById(area.value, this.AE_Areas);
 
-    //         this.area = relatedArea;
-    //     }
-    // }
+            //     this.area = relatedArea;
+            // }
+        }
     }
 </script>
