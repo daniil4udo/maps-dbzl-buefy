@@ -1,7 +1,7 @@
 <template>
     <div class="container">
-        <b-field label="Emirate">
-            <b-radio-button
+        <B-Field label="Emirate">
+            <B-Radio-button
                 v-for="(val, key) in AE_Emirates"
                 :key="key"
                 v-model="emirate"
@@ -9,8 +9,8 @@
                 type="is-success"
             >
                 <span>{{ val.name_en }}</span>
-            </b-radio-button>
-        </b-field>
+            </B-Radio-button>
+        </B-Field>
 
         <!-- {{ area }} -->
         <Autocomplete
@@ -38,7 +38,7 @@
         />
 
         {{ coords.lat }},{{ coords.lng }}
-        <b-button @click="setNewCoords" v-text="'Set New Coords'" />
+        <B-Button @click="setNewCoords" v-text="'Set New Coords'" />
         <Map
             v-if="google"
             v-model="coords"

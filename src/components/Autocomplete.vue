@@ -1,10 +1,10 @@
 <template>
-    <b-field
+    <B-Field
         expanded
         :label="label"
         :disabled="disabled"
     >
-        <b-autocomplete
+        <B-Autocomplete
             v-model="inputModel"
             clearable
             expanded
@@ -24,8 +24,8 @@
                     </div>
                 </div>
             </template>
-        </b-autocomplete>
-    </b-field>
+        </B-Autocomplete>
+    </B-Field>
 </template>
 
 <script lang="ts">
@@ -69,7 +69,7 @@
 
         @Watch('selected', { immediate: false, deep: true })
         onAutocompleteSelect(newV: T) {
-            // We do need it. Odd
+            // We need it because this method is in the @select event
             this.selected = newV;
 
             if (!isNil(this.selected) && this.inputModel !== this.selected.name_en) {
