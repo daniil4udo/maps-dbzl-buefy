@@ -113,11 +113,6 @@
             strokeWeight: 1,
         }
 
-        // center = {
-            //     lat: null,
-        //     lng: null,
-        // }
-
         //
         latLngInstance = null as google.maps.LatLng
         foundAreaPoint = null as IPolygon<IArea>
@@ -127,10 +122,10 @@
         isVisibleTooltip = true
         tooltipText = ''
         messages = {
-            loading: 'Finding your location...',
-            water: 'Are you scuba diving?',
-            land: 'Lost in the desert?',
-            generic: 'Do you need a GPS, dude?',
+            loading: '🔍 Finding your location...',
+            water: '🤿 Are you scuba diving?',
+            land: '🐪 Lost in the desert?',
+            generic: '🧭 Do you need a GPS, dude?',
         }
 
         // Computed

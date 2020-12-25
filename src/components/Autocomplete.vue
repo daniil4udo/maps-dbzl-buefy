@@ -6,12 +6,12 @@
     >
         <b-autocomplete
             v-model="inputModel"
-            :placeholder="placeholder"
             clearable
             expanded
             open-on-focus
-            :data="filteredData"
+            :placeholder="placeholder"
             :disabled="disabled"
+            :data="filteredData"
             :field="field"
             @select="onAutocompleteSelect"
         >
@@ -37,9 +37,9 @@
     import { EmirateKey, IArea, IBuilding } from '@/components/models';
 
     @Component({
-        name: 'GoogleMapAutocomplete',
+        name: 'Autocomplete',
     })
-    export default class GoogleMapAutocomplete<T extends IArea & IBuilding> extends Vue {
+    export default class Autocomplete<T extends IArea & IBuilding> extends Vue {
         @Prop({ type: String, default: () => '' }) field!: keyof T
         @Prop({ type: String, default: () => '' }) label!: string
         @Prop({ type: String, default: () => '' }) placeholder!: string
@@ -69,6 +69,7 @@
 
         @Watch('selected', { immediate: false, deep: true })
         onAutocompleteSelect(newV: T) {
+            // We do need it. Odd
             this.selected = newV;
 
             if (!isNil(this.selected) && this.inputModel !== this.selected.name_en) {
