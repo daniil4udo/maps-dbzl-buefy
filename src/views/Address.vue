@@ -75,7 +75,7 @@
     export default class Address extends Vue {
         // GMap data
         google = null as google | null;
-        apiKey = 'AIzaSyDCWGWQFBHWRuqhkSjWQFb6Sf7T8jm7Y6I';
+        apiKey = 'AIzaSyDPnAnJeY1TR8ugUI28QuSLwcmGxVT8Y30';
         options = { libraries: [ 'geometry', 'places' ] } as LoaderOptions;
 
         //
