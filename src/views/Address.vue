@@ -41,11 +41,13 @@
         <B-Button @click="setNewCoords" v-text="'Set New Coords'" />
         <Map
             v-if="google"
-            v-model="coords"
+            :center.sync="coords"
             :google="google"
             :country="'AE'"
             :emirate="emirateDetails"
+            :area="area"
             :areas="emirateAreas"
+            :building="building"
             :buildings="AE_Buildings"
             @area-changed="onAreaChanched"
         />

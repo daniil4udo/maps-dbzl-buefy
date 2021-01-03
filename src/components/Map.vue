@@ -41,12 +41,12 @@
     /* eslint-disable @typescript-eslint/no-unused-vars */
 
     import { google } from 'google-maps';
-    import { Component, Prop, Ref, Watch, Emit, VModel, Vue } from 'vue-property-decorator';
+    import { Component, Prop, PropSync, Ref, Watch, Emit, VModel, Vue } from 'vue-property-decorator';
 
     import Tooltip from '@/components/Tooltip.vue';
     import { isDefined, has, isLocalStorageAccessSafe } from '@/utils/';
 
-    import { IEmirate, IArea, IBuilding, IPolygon, ILatLng } from './models';
+    import { IEmirate, IArea, Areas, IBuilding, Buildings, IPolygon, ILatLng } from './models';
     // Events names
     const idNeighbourhood = 'id_neighbourhood';
     const idBuilding = 'id_building';
@@ -70,11 +70,13 @@
         @Prop({ type: Object }) area!: IArea;
         @Prop({ type: Object }) building!: IBuilding
 
-        @Prop({ type: Object }) readonly areas!: Record<string, IArea>;
-        @Prop({ type: Object }) readonly buildings!: Record<number, IBuilding>
+        @Prop({ type: Object }) readonly areas!: Areas;
+        @Prop({ type: Object }) readonly buildings!: Buildings
 
         @Ref() readonly googleMap!: HTMLDivElement;
         @Ref() readonly tooltip!: HTMLDivElement;
+
+        @PropSync('center', { type: Object, default: () => ({ lat: null, lng: null }) }) syncedCenter!: ILatLng
 
         // Data
         mapInstance = null as google.maps.Map<HTMLDivElement>
@@ -310,8 +312,6 @@
             return polygon;
         }
 
-        @VModel({ type: Object, default: () => ({ lat: null, lng: null }) }) center!: ILatLng
-
         mounted() {
             if (isDefined(this.google)) {
                 this.initGoogleMaps();
@@ -329,7 +329,7 @@
         @Watch('center', { immediate: false, deep: true })
         onCenterChanged(newV: ILatLng, oldV: ILatLng) {
             // Needed for v-model work properly
-            if (isDefined(newV.lat) && isDefined(newV.lng) && JSON.stringify(newV) !== JSON.stringify(oldV)) {
+            if (isDefined(newV.lat) && isDefined(newV.lng)) {
                 const mapCenter = new this.google.maps.LatLng(
                     newV.lat,
                     newV.lng,
@@ -415,10 +415,10 @@
         }
 
         setUserLocation() {
-            if (isDefined(this.center.lat) && isDefined(this.center.lng)) {
+            if (isDefined(this.syncedCenter.lat) && isDefined(this.syncedCenter.lng)) {
                 this.latLngInstance = new this.google.maps.LatLng(
-                    this.center.lat,
-                    this.center.lng,
+                    this.syncedCenter.lat,
+                    this.syncedCenter.lng,
                 );
 
                 return this.latLngInstance;
@@ -456,12 +456,12 @@
         }
 
         setCoordinates({ lat, lng }: google.maps.LatLng) {
-            if (this.center.lat !== lat()) {
-                this.center.lat = lat();
+            if (this.syncedCenter.lat !== lat()) {
+                this.syncedCenter.lat = lat();
             }
 
-            if (this.center.lng !== lng()) {
-                this.center.lng = lng();
+            if (this.syncedCenter.lng !== lng()) {
+                this.syncedCenter.lng = lng();
             }
 
             if (isLocalStorageAccessSafe) {
