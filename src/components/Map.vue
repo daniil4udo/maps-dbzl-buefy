@@ -7,6 +7,7 @@
         <div class="dbz-map__body">
             <p class="flame-text flame-text--title5">
                 Is the pin in the right location?
+                {{ tooltip }}
             </p>
             <p class="flame-text flame-text--medium">
                 Click and drag the pin to the exact spot. Users are more likely to
@@ -94,6 +95,155 @@
                 style: this.google.maps.ZoomControlStyle.LARGE,
                 position: this.google.maps.ControlPosition.LEFT_TOP,
             },
+            styles: [
+                {
+                    featureType: 'administrative',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            visibility: 'on',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'road',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            visibility: 'off',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'road.highway',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            visibility: 'on',
+                        },
+                        {
+                            color: '#18a57e',
+                        },
+                        {
+                            weight: '0.55',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'road.highway',
+                    elementType: 'labels.icon',
+                    stylers: [
+                        {
+                            visibility: 'off',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'road.highway.controlled_access',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            visibility: 'on',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'road.highway.controlled_access',
+                    elementType: 'labels.icon',
+                    stylers: [
+                        {
+                            visibility: 'off',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'road.arterial',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            hue: '#00b7ff',
+                        },
+                        {
+                            saturation: -31.19999999999996,
+                        },
+                        {
+                            lightness: 2.1803921568627374,
+                        },
+                        {
+                            gamma: 1,
+                        },
+                        {
+                            visibility: 'on',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'road.local',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            hue: '#00B5FF',
+                        },
+                        {
+                            saturation: -33.33333333333343,
+                        },
+                        {
+                            lightness: 27.294117647058826,
+                        },
+                        {
+                            gamma: 1,
+                        },
+                        {
+                            visibility: 'on',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'transit',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            visibility: 'on',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'transit.line',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            visibility: 'off',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'transit.station.airport',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            visibility: 'on',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'transit.station.bus',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            visibility: 'off',
+                        },
+                    ],
+                },
+                {
+                    featureType: 'water',
+                    elementType: 'all',
+                    stylers: [
+                        {
+                            color: '#2757a3',
+                        },
+                    ],
+                },
+            ],
             panControl: false,
             zoomIncrement: 2,
             zoomEmirate: 1,
@@ -387,6 +537,11 @@
             return newArea;
         }
 
+        locateEmirate(e: google.maps.LatLng) {
+            // TODO: need to autodetect emirate
+            // use only on the first call!
+        }
+
         locatePoint(e: google.maps.LatLng, o?: IArea | IPolygon<IArea>) {
             this.areaContainingPoint(e, o);
 
@@ -475,9 +630,8 @@
         handleGoogleMapIdle() {
             const mapCenter = this.mapInstance.getCenter();
 
-            this.locatePoint(mapCenter);
             this.setCoordinates(mapCenter);
-
+            this.locatePoint(mapCenter);
             // this.dispatchEvent();
 
             return mapCenter;
