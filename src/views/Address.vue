@@ -113,12 +113,21 @@
         }
 
         // Created hook
-        async created() {
-            // Initializing map in her to make sure it avaliable on created in the Map component
-            const loader = new Loader(this.apiKey, this.options);
-            const gMaps = await loader.load();
+        created() {
+            this.loadGMaps();
+        }
 
-            this.google = gMaps;
+        async loadGMaps() {
+            try {
+                // Initializing map in her to make sure it avaliable on created in the Map component
+                const loader = new Loader(this.apiKey, this.options);
+                const gMaps = await loader.load();
+
+                this.google = gMaps;
+            }
+            catch {
+                // swallow
+            }
         }
 
         // TEST METHODS
