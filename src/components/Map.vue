@@ -55,6 +55,11 @@
     // const dbzMapClose = 'dbz.map.close';
     // const dbzMapError = 'dbz.map.error';
 
+    const ZOOM_INCREMENT = 2;
+    const ZOOM_EMIRATE = 1;
+    const ZOOM_AREA = 2;
+    const ZOOM_BUILDING = 3;
+
     @Component({
         name: 'Map',
         components: {
@@ -247,10 +252,6 @@
                 },
             ],
             panControl: false,
-            zoomIncrement: 2,
-            zoomEmirate: 1,
-            zoomArea: 2,
-            zoomBuilding: 3,
             animDuration: 200,
             delayAnim: 100,
             shortAnim: 400,
@@ -347,7 +348,7 @@
                     val.coords[0],
                 );
 
-                this.setZoom(this.mapOptions.zoomEmirate);
+                this.setZoom(ZOOM_EMIRATE);
                 this.mapInstance.panTo(mapCenter);
             }
         }
@@ -480,7 +481,7 @@
             const mapCenter = new this.google.maps.LatLng(neighbourhood.coords[1], neighbourhood.coords[0]);
 
             this.mapInstance.panTo(mapCenter);
-            this.setZoom(this.mapOptions.zoomArea);
+            this.setZoom(ZOOM_AREA);
             this.setCoordinates(mapCenter);
             this.locatePoint(mapCenter, neighbourhood);
         }
@@ -496,7 +497,7 @@
                 const mapCenter = new this.google.maps.LatLng(building.coords[1], building.coords[0]);
 
                 this.mapInstance.panTo(mapCenter);
-                this.setZoom(this.mapOptions.zoomBuilding);
+                this.setZoom(ZOOM_BUILDING);
                 this.locatePoint(mapCenter);
                 this.setCoordinates(mapCenter);
 
@@ -608,11 +609,11 @@
 
             this.setUserLocation();
 
-            const mapCenter = this.latLngInstance || this.mapOptions.center;// this.mapOptions.center;
+            const mapCenter = this.latLngInstance || this.mapOptions.center as google.maps.LatLng;
 
             // Responsible for retriving code from local storage
             this.mapInstance.panTo(mapCenter);
-            this.setZoom(this.mapOptions.zoomIncrement);
+            this.setZoom(ZOOM_INCREMENT);
             this.setCoordinates(mapCenter);
             this.locatePoint(mapCenter);
 
