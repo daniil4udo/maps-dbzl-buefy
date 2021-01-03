@@ -54,13 +54,13 @@
 
 <script lang="ts">
     import { Loader, LoaderOptions, google } from 'google-maps';
-    import isNil from 'lodash/isNil';
     import { Component, Vue } from 'vue-property-decorator';
 
     import { findEmirate, findNeighbourhoodById } from '@/assets/uaeGeoData/utils';
     import Autocomplete from '@/components/Autocomplete.vue';
     import Map from '@/components/Map.vue';
     import { EmirateKey, IEmirate, IArea, IBuilding, IPolygon, Emirates, Areas, Buildings } from '@/components/models';
+    import { isDefined } from '@/utils/';
 
     import { areas } from '../assets/uaeGeoData/areas';
     import { buildings } from '../assets/uaeGeoData/buildings';
@@ -129,7 +129,7 @@
 
         // Methods
         onAutocompleteInput<T extends IArea & IBuilding>(payload: T, scope: 'area' | 'building') {
-            if (isNil(payload)) {
+            if (!isDefined(payload)) {
                 return;
             }
 

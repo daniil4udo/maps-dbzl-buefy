@@ -9,11 +9,13 @@
             clearable
             expanded
             open-on-focus
-            :placeholder="placeholder"
+            :placeholder="dynamicPlaceholder"
             :disabled="disabled"
             :data="filteredData"
             :field="field"
-            @select="onAutocompleteSelect"
+            @focus="dynamicPlaceholder = 'No time to explain, start typing...'"
+            @blur="dynamicPlaceholder = placeholder"
+            @select="onAutocompleteChnaged"
         >
             <template slot-scope="props">
                 <div class="media">
@@ -29,51 +31,63 @@
 </template>
 
 <script lang="ts">
-    import Fuse from 'fuse.js';
-    import { isNil } from 'lodash';
-    import has from 'lodash/has';
+    import Fuse, { FuseOptionKey } from 'fuse.js/dist/fuse.basic.esm';
     import { Component, Vue, Prop, VModel, Watch } from 'vue-property-decorator';
 
     import { EmirateKey, IArea, IBuilding } from '@/components/models';
+    import { isDefined, has } from '@/utils/';
 
     @Component({
         name: 'Autocomplete',
     })
     export default class Autocomplete<T extends IArea & IBuilding> extends Vue {
-        @Prop({ type: String, default: () => '' }) field!: keyof T
+        // Key of data object to dispaly in the autocomplete
+        @Prop({ type: String, default: () => '' }) field!: string // keyof T
+        // Field text labale
         @Prop({ type: String, default: () => '' }) label!: string
         @Prop({ type: String, default: () => '' }) placeholder!: string
         @Prop({ type: Boolean, default: () => false }) disabled!: boolean
 
         @Prop({ type: String, default: () => null }) emirate!: EmirateKey
 
+        // TODO: makes sense to pass an array, due to no object use in here
         @Prop({ type: Object, default: () => null }) readonly data!: Record<string, T>;
-        @Prop({ type: Array, default: () => [ 'name_en', 'name_ar' ] }) readonly indexKeys!: string[];
+        @Prop({ type: Array, default: () => [ 'name_en', 'name_ar' ] }) readonly indexKeys!: (keyof T)[];
 
         inputModel = '';
+        dynamicPlaceholder = this.placeholder
 
         @VModel({ type: Object, default: () => null }) selected!: T
 
         get dataIndex() {
             return new Fuse(Object.values(this.data), {
                 includeScore: true,
-                keys: this.indexKeys,
+                keys: this.indexKeys as FuseOptionKey,
                 threshold: 0.23,
                 includeMatches: true,
             });
         }
 
         get filteredData() {
+            // if (this.inputModel.length < 1) {
+            //     return Object.values(this.data);
+            // }
             return this.findMatch(this.inputModel);
         }
 
-        @Watch('selected', { immediate: false, deep: true })
-        onAutocompleteSelect(newV: T) {
-            // We need it because this method is in the @select event
-            this.selected = newV;
+        /**
+         * Separation of concerns
+         * We need it because this method is in the @select event
+         */
+        onAutocompleteChnaged(s: T) {
+            this.selected = s;
+        }
 
-            if (!isNil(this.selected) && this.inputModel !== this.selected.name_en) {
-                this.inputModel = this.selected.name_en;
+        // Track V-Model changes
+        @Watch('selected', { immediate: false, deep: true })
+        onSelectedChanged(newV: T) {
+            if (isDefined(this.selected) && this.inputModel !== this.selected[this.field]) {
+                this.inputModel = this.selected[this.field];
             }
 
             this.$emit('autocomplete-changed', newV);
@@ -95,7 +109,7 @@
 
                 for (const value in this.data) {
                     if (has(this.data, value)) {
-                        if (String(this.data[value]?.name_en).toLowerCase().includes(this.inputModel.toLowerCase())) {
+                        if (String(this.data[value]?.name_en).toLowerCase().includes(str.toLowerCase())) {
                             // IMPORTANT: assignig it to item prop: mocking Fuse API
                             filteredData.push({ ...this.data[value], value });
                         }

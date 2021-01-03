@@ -36,12 +36,14 @@
 </template>
 
 <script lang="ts">
+    /* eslint-disable no-unused-vars */
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+
     import { google } from 'google-maps';
-    import has from 'lodash/has';
-    import isNil from 'lodash/isNil';
     import { Component, Prop, Ref, Watch, Emit, VModel, Vue } from 'vue-property-decorator';
 
     import Tooltip from '@/components/Tooltip.vue';
+    import { isDefined, has, isLocalStorageAccessSafe } from '@/utils/';
 
     import { IEmirate, IArea, IBuilding, IPolygon, ILatLng } from './models';
     // Events names
@@ -155,16 +157,29 @@
                 }
             }
 
-            // return Object.keys(obj).map(n.bind(this));
             return polygon;
         }
 
         @VModel({ type: Object, default: () => ({ lat: null, lng: null }) }) center!: ILatLng
 
+        mounted() {
+            if (isDefined(this.google)) {
+                this.initGoogleMaps();
+                this.addEventListeners();
+            }
+            else {
+                throw new Error('Cannot initialize Map without the GMap instance');
+            }
+        }
+
+        destroyed() {
+            this.google.maps.event.clearInstanceListeners(this.mapInstance);
+        }
+
         @Watch('center', { immediate: false, deep: true })
         onCenterChanged(newV: ILatLng, oldV: ILatLng) {
             // Needed for v-model work properly
-            if (!isNil(newV.lat) && !isNil(newV.lng) && JSON.stringify(newV) !== JSON.stringify(oldV)) {
+            if (isDefined(newV.lat) && isDefined(newV.lng) && JSON.stringify(newV) !== JSON.stringify(oldV)) {
                 const mapCenter = new this.google.maps.LatLng(
                     newV.lat,
                     newV.lng,
@@ -176,7 +191,7 @@
 
         @Watch('emirate', { immediate: false, deep: true })
         onEmirateChange(val: IEmirate, oldVal: IEmirate) {
-            if (!isNil(val) && val.name_en !== oldVal.name_en) {
+            if (isDefined(val) && val.name_en !== oldVal.name_en) {
                 const mapCenter = new this.google.maps.LatLng(
                     val.coords[1],
                     val.coords[0],
@@ -189,25 +204,15 @@
 
         @Watch('area', { immediate: false, deep: true })
         onAreaChanged(newV: IArea) {
-            if (!isNil(newV?.value)) {
+            if (isDefined(newV?.value)) {
                 this.setNeighbourhood(newV.value);
             }
         }
 
         @Watch('building', { immediate: false, deep: true })
         onBuildingChanged(newV: IBuilding) {
-            if (!isNil(newV?.value)) {
+            if (isDefined(newV?.value)) {
                 this.setBuilding(newV.value);
-            }
-        }
-
-        mounted() {
-            if (!isNil(this.google)) {
-                this.initGoogleMaps();
-                this.addEventListeners();
-            }
-            else {
-                throw new Error('Cannot initialize Map without the GMap instance');
             }
         }
 
@@ -260,7 +265,7 @@
         }
 
         setUserLocation() {
-            if (!isNil(this.center.lat) && !isNil(this.center.lng)) {
+            if (isDefined(this.center.lat) && isDefined(this.center.lng)) {
                 this.latLngInstance = new this.google.maps.LatLng(
                     this.center.lat,
                     this.center.lng,
@@ -269,7 +274,7 @@
                 return this.latLngInstance;
             }
 
-            if (window.localStorage.getItem('lat') && window.localStorage.getItem('lng')) {
+            if (isLocalStorageAccessSafe && window.localStorage.getItem('lat') && window.localStorage.getItem('lng')) {
                 this.latLngInstance = new this.google.maps.LatLng(
                     parseFloat(window.localStorage.getItem('lat')),
                     parseFloat(window.localStorage.getItem('lng')),
@@ -304,12 +309,15 @@
             if (this.center.lat !== lat()) {
                 this.center.lat = lat();
             }
+
             if (this.center.lng !== lng()) {
                 this.center.lng = lng();
             }
 
-            window.localStorage.setItem('lat', JSON.stringify(lat()));
-            window.localStorage.setItem('lng', JSON.stringify(lng()));
+            if (isLocalStorageAccessSafe) {
+                window.localStorage.setItem('lat', JSON.stringify(lat()));
+                window.localStorage.setItem('lng', JSON.stringify(lng()));
+            }
         }
 
         setNeighbourhood(id: string | number) {
@@ -444,7 +452,11 @@
 
             const mapCenter = this.latLngInstance || this.mapOptions.center;// this.mapOptions.center;
 
+            // Responsible for retriving code from local storage
+            this.mapInstance.panTo(mapCenter);
             this.setZoom(this.mapOptions.zoomIncrement);
+            this.setCoordinates(mapCenter);
+            this.locatePoint(mapCenter);
 
             return mapCenter;
         }
@@ -496,7 +508,7 @@
             // querySelectorPin.classList.add('outside-polygons');
             const elevetioResponse = await this.getElevationResponse(results, status);
 
-            if (!isNil(elevetioResponse)) {
+            if (isDefined(elevetioResponse)) {
                 elevetioResponse > 0
                     ? (this.setTooltipText(this.messages.land))
                     : (this.setTooltipText(this.messages.water));
