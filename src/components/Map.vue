@@ -570,7 +570,7 @@
                 this.foundAreaPoint = newArea;
 
                 // Not using @Emit here to avoid redundant firing of null
-                this.$emit('area-changed', newArea);
+                this.handleAreaChange(newArea);
             }
         }
 
@@ -596,6 +596,9 @@
                 this.setNeighbourhood(eventPayload.detail.value);
             }
         }
+
+        @Emit('area-changed')
+        handleAreaChange(newArea: IPolygon<IArea>) {}
 
         // GMaps event hadlers
         @Emit('tilesloaded')
