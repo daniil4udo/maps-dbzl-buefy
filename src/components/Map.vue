@@ -254,7 +254,7 @@
             shortAnim: 400,
             mediumAnim: 600,
             longAnim: 1e3,
-        }
+        } as google.maps.MapOptions
 
         // areaPolygonInstances: null,
         polygonOptions = {
