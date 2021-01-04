@@ -50,7 +50,7 @@
     import { EmirateKey, IArea, IBuilding } from '@/components/models';
     import { isDefined, has, debounce } from '@/utils/';
 
-    import { WorkerSearch } from './fuse.worker';
+    import { WorkerSearch } from './search.worker';
 
     @Component({
         name: 'Autocomplete',
