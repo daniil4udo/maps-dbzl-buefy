@@ -636,15 +636,12 @@
         "name_ar": "\u062a\u0634\u0631\u0634\u0644 \u0631\u064a\u0632\u064a\u062f\u0646\u0633\u064a",
         "neighbourhood_id": 87
     },
-    "8321": {
-        "name_en": "Tiara Hotel Palm Jumeirah",
+    "2752": {
+        "name_en": "Saeed Tower 2",
         "is_in_migrated_neighbourhood": true,
-        "coords": [
-            55.140854,
-            25.115407
-        ],
-        "name_ar": "\u0641\u0646\u062f\u0642 \u062a\u064a\u0627\u0631\u0627 \u0646\u062e\u0644\u0629 \u062c\u0645\u064a\u0631\u0627",
-        "neighbourhood_id": 52
+        "coords": null,
+        "name_ar": "\u0628\u0631\u062c \u0633\u0639\u064a\u062f 2",
+        "neighbourhood_id": 90
     },
     "8322": {
         "name_en": "Aloft Hotel Palm Jumeirah",
@@ -3059,7 +3056,7 @@
             24.485339
         ],
         "name_ar": "\u0628\u0631\u062c \u0627\u0644\u062d\u0635\u0646",
-        "neighbourhood_id": 57387
+        "neighbourhood_id": 62250
     },
     "8656": {
         "name_en": "Suburbia Tower 2",
@@ -3899,7 +3896,7 @@
             55.169127,
             25.091539
         ],
-        "name_ar": null,
+        "name_ar": "",
         "neighbourhood_id": 62708
     },
     "448": {
@@ -4719,6 +4716,16 @@
         "name_ar": "\u0648\u064a\u0627\u0644 \u0623\u062a\u0644\u0627\u0646\u062a\u0633 \u0631\u064a\u0632\u064a\u062f\u0646\u0633",
         "neighbourhood_id": 52
     },
+    "8321": {
+        "name_en": "Tiara Hotel Palm Jumeirah",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            55.140854,
+            25.115407
+        ],
+        "name_ar": "\u0641\u0646\u062f\u0642 \u062a\u064a\u0627\u0631\u0627 \u0646\u062e\u0644\u0629 \u062c\u0645\u064a\u0631\u0627",
+        "neighbourhood_id": 52
+    },
     "8482": {
         "name_en": "Signature Accommodation",
         "is_in_migrated_neighbourhood": false,
@@ -5238,6 +5245,16 @@
         ],
         "name_ar": "\u0623\u0628\u0631\u0627\u062c \u062a\u064a\u0641\u0627\u0646\u064a",
         "neighbourhood_id": 193
+    },
+    "2756": {
+        "name_en": "Silverene Tower B",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            55.138498,
+            25.075277
+        ],
+        "name_ar": "\u0628\u0631\u062c \u0633\u064a\u0644\u0641\u0631\u064a\u0646 B",
+        "neighbourhood_id": 63
     },
     "856": {
         "name_en": "Wind Tower 2",
@@ -6797,6 +6814,16 @@
         "name_ar": "\u0628\u064a\u0646\u0646\u0633\u0648\u0644\u0627",
         "neighbourhood_id": 87
     },
+    "10951": {
+        "name_en": "N-09",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            55.407909,
+            25.160136
+        ],
+        "name_ar": "N-09",
+        "neighbourhood_id": 63509
+    },
     "1201": {
         "name_en": "Al Hudaiba",
         "is_in_migrated_neighbourhood": false,
@@ -8229,11 +8256,11 @@
         "name_en": "Hamdan Centre",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.362829,
-            24.48887
+            54.362592,
+            24.48903
         ],
         "name_ar": "\u0645\u0631\u0643\u0632 \u062d\u0645\u062f\u0627\u0646",
-        "neighbourhood_id": 57390
+        "neighbourhood_id": 63613
     },
     "9823": {
         "name_en": "Vincitore Boulevard",
@@ -8383,7 +8410,7 @@
             24.446162
         ],
         "name_ar": "\u0639\u0632\u0627\u0645 \u0648\u0627\u0646 \u0631\u064a\u0632\u064a\u062f\u0646\u0633",
-        "neighbourhood_id": 57411
+        "neighbourhood_id": 57318
     },
     "9802": {
         "name_en": "Acacia C",
@@ -9177,7 +9204,7 @@
             24.446326
         ],
         "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u0643\u0627\u0646\u0627\u0644 \u0641\u064a\u0648",
-        "neighbourhood_id": 57411
+        "neighbourhood_id": 57318
     },
     "8479": {
         "name_en": "Lincoln Park B",
@@ -18780,13 +18807,13 @@
         "neighbourhood_id": 87
     },
     "10935": {
-        "name_en": "Tiger 5 Building",
+        "name_en": "Taawun 5 Tiger Building",
         "is_in_migrated_neighbourhood": false,
         "coords": [
             55.375301,
             25.311942
         ],
-        "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u062a\u0627\u064a\u062c\u0631 5",
+        "name_ar": "\u0627\u0644\u062a\u0639\u0627\u0648\u0646 5 \u0628\u0646\u0627\u064a\u0629 \u062a\u0627\u064a\u062c\u0631",
         "neighbourhood_id": 62226
     },
     "2744": {
@@ -18849,12 +18876,45 @@
         "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u0627\u0644\u0648\u0632\u064a\u0631",
         "neighbourhood_id": 60020
     },
-    "2752": {
-        "name_en": "Saeed Tower 2",
+    "10942": {
+        "name_en": "API Horizon Pointe",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.322563,
+            25.182235
+        ],
+        "name_ar": "\u0627\u064a \u0628\u064a \u0627\u064a \u0647\u0648\u0631\u0627\u064a\u0632\u0648\u0646 \u0628\u0648\u064a\u0646\u062a",
+        "neighbourhood_id": 63623
+    },
+    "10943": {
+        "name_en": "Friends Tower",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
-        "name_ar": "\u0628\u0631\u062c \u0633\u0639\u064a\u062f 2",
-        "neighbourhood_id": 90
+        "coords": [
+            54.4366,
+            24.428922
+        ],
+        "name_ar": "\u0628\u0631\u062c \u0627\u0644\u0623\u0635\u062f\u0642\u0627\u0621",
+        "neighbourhood_id": 57370
+    },
+    "10944": {
+        "name_en": "Danet Tower A",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.436241,
+            24.429301
+        ],
+        "name_ar": "\u0628\u0631\u062c \u062f\u0627\u0646\u0629 A",
+        "neighbourhood_id": 57370
+    },
+    "10945": {
+        "name_en": "Golf Promenade 2A",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            55.251269,
+            25.013113
+        ],
+        "name_ar": "\u063a\u0648\u0644\u0641 \u0628\u0631\u0648\u0645\u064a\u0646\u0627\u062f 2A",
+        "neighbourhood_id": 63626
     },
     "2755": {
         "name_en": "Silverene Tower A",
@@ -18866,15 +18926,35 @@
         "name_ar": "\u0628\u0631\u062c \u0633\u064a\u0644\u0641\u0631\u064a\u0646 A",
         "neighbourhood_id": 63
     },
-    "2756": {
-        "name_en": "Silverene Tower B",
+    "10948": {
+        "name_en": "Lawnz by Danube",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            55.138498,
-            25.075277
+            55.410051,
+            25.15248
         ],
-        "name_ar": "\u0628\u0631\u062c \u0633\u064a\u0644\u0641\u0631\u064a\u0646 B",
-        "neighbourhood_id": 63
+        "name_ar": "\u0644\u0627\u0648\u0646\u0632 \u0644\u062f\u0627\u0646\u0648\u0628",
+        "neighbourhood_id": 94
+    },
+    "10949": {
+        "name_en": "Basra Tower",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            55.402914,
+            25.148251
+        ],
+        "name_ar": "\u0628\u0631\u062c \u0628\u0635\u0631\u0629",
+        "neighbourhood_id": 62218
+    },
+    "10950": {
+        "name_en": "Alfa Centre Building",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.391735,
+            25.32568
+        ],
+        "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u0627\u0644\u0645\u0631\u0643\u0632 \u0623\u0644\u0641\u0627",
+        "neighbourhood_id": 63585
     },
     "10017": {
         "name_en": "F-07",
@@ -18886,15 +18966,185 @@
         "name_ar": "\u0641-07",
         "neighbourhood_id": 63508
     },
-    "2771": {
-        "name_en": "Skycourts Tower A",
+    "10952": {
+        "name_en": "Al Badaa Oasis Building",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.270463,
+            25.231206
+        ],
+        "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u0648\u0627\u062d\u0629 \u0627\u0644\u0628\u062f\u0639",
+        "neighbourhood_id": 62190
+    },
+    "10953": {
+        "name_en": "5th Avenue",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            55.385412,
-            25.092207
+            55.141145,
+            25.037048
         ],
-        "name_ar": "\u0633\u0643\u0627\u064a \u0643\u0648\u0631\u062a\u0633 - \u0628\u0631\u062c A",
-        "neighbourhood_id": 62505
+        "name_ar": "\u0641\u064a\u0641\u062b \u0623\u0641\u064a\u0646\u064a\u0648",
+        "neighbourhood_id": 191
+    },
+    "10954": {
+        "name_en": "Marina Bay Tower 1",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.403368,
+            24.499569
+        ],
+        "name_ar": "\u0628\u0631\u062c \u0645\u0627\u0631\u064a\u0646\u0627 \u0628\u0627\u064a 1",
+        "neighbourhood_id": 57457
+    },
+    "10956": {
+        "name_en": "Warqa Blue",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.40795,
+            25.18016
+        ],
+        "name_ar": "\u0627\u0644\u0648\u0631\u0642\u0627\u0621 \u0627\u0644\u0623\u0632\u0631\u0642",
+        "neighbourhood_id": 62573
+    },
+    "10957": {
+        "name_en": "Port Saeed Building",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.335945,
+            25.25503
+        ],
+        "name_ar": "\u0645\u0628\u0646\u0649 \u0628\u0648\u0631 \u0633\u0639\u064a\u062f",
+        "neighbourhood_id": 62397
+    },
+    "10958": {
+        "name_en": "Baniyas Center",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.30959,
+            25.266888
+        ],
+        "name_ar": "\u0645\u0631\u0643\u0632 \u0628\u0646\u064a \u064a\u0627\u0633",
+        "neighbourhood_id": 62270
+    },
+    "10959": {
+        "name_en": "Al Karama Building",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.299902,
+            25.244889
+        ],
+        "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u0627\u0644\u0643\u0631\u0627\u0645\u0629",
+        "neighbourhood_id": 97
+    },
+    "10960": {
+        "name_en": "Dana Al Garhoud",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.342368,
+            25.25244
+        ],
+        "name_ar": "\u062f\u0627\u0646\u0629 \u0627\u0644\u0642\u0631\u0647\u0648\u062f",
+        "neighbourhood_id": 127
+    },
+    "10961": {
+        "name_en": "Al Ashrafia Building",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.322038,
+            25.260624
+        ],
+        "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u0627\u0644\u0627\u0634\u0631\u0641\u064a\u0629",
+        "neighbourhood_id": 62208
+    },
+    "10962": {
+        "name_en": "API Barsha Heights Tower",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.178032,
+            25.09721
+        ],
+        "name_ar": "API \u0628\u0631\u0634\u0627 \u0647\u0627\u064a\u062a\u0633 \u062a\u0627\u0648\u0631",
+        "neighbourhood_id": 57493
+    },
+    "10963": {
+        "name_en": "Al Durrah 7",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.329763,
+            25.222437
+        ],
+        "name_ar": "\u0627\u0644\u062f\u0631\u0629 7",
+        "neighbourhood_id": 89
+    },
+    "10964": {
+        "name_en": "Ananas 3 Building",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.404907,
+            25.181263
+        ],
+        "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u0623\u0646\u0627\u0646\u0633 3",
+        "neighbourhood_id": 62573
+    },
+    "10965": {
+        "name_en": "Buqbai Tower",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.35519,
+            24.479963
+        ],
+        "name_ar": "\u0628\u0631\u062c \u0628\u0642\u0628\u0627\u064a",
+        "neighbourhood_id": 57387
+    },
+    "10966": {
+        "name_en": "Jaddaf Place",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.330006,
+            25.214251
+        ],
+        "name_ar": "\u062c\u062f\u0627\u0641 \u0628\u0644\u0627\u064a\u0633",
+        "neighbourhood_id": 89
+    },
+    "10967": {
+        "name_en": "Al Muhairibi Building",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.303798,
+            25.236842
+        ],
+        "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u0627\u0644\u0645\u062d\u064a\u0631\u0628\u064a",
+        "neighbourhood_id": 97
+    },
+    "10968": {
+        "name_en": "Noor Residences",
+        "is_in_migrated_neighbourhood": false,
+        "coords": [
+            55.359884,
+            25.324384
+        ],
+        "name_ar": "\u0646\u0648\u0631 \u0631\u064a\u0632\u064a\u062f\u0646\u0633\u064a\u0632",
+        "neighbourhood_id": 62594
+    },
+    "10969": {
+        "name_en": "Dusit Thani Abu Dhabi",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.393944,
+            24.454521
+        ],
+        "name_ar": "\u0641\u0646\u062f\u0642 \u062f\u0648\u0633\u064a\u062a \u062a\u0627\u0646\u064a",
+        "neighbourhood_id": 63632
+    },
+    "10971": {
+        "name_en": "Bay Tower",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.368612,
+            24.503842
+        ],
+        "name_ar": "\u0628\u0631\u062c \u0628\u0627\u064a",
+        "neighbourhood_id": 63621
     },
     "2780": {
         "name_en": "Office Court Building",
@@ -18905,6 +19155,16 @@
         ],
         "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u0627\u0648\u0641\u064a\u0633 \u0643\u0648\u0631\u062a ",
         "neighbourhood_id": 95
+    },
+    "10973": {
+        "name_en": "Zumurd Mall of the Emirates",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            55.204771,
+            25.116665
+        ],
+        "name_ar": "\u0632\u0648\u0645\u0648\u0631\u0648\u062f \u0645\u0648\u0644 \u0627\u0644\u0625\u0645\u0627\u0631\u0627\u062a",
+        "neighbourhood_id": 62179
     },
     "4457": {
         "name_en": "Y Tower",
@@ -21400,11 +21660,11 @@
         "name_en": "Al Waha Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.350556,
-            24.473056
+            54.350258,
+            24.472863
         ],
         "name_ar": "\u0628\u0631\u062c \u0627\u0644\u0648\u0627\u062d\u0629",
-        "neighbourhood_id": 57395
+        "neighbourhood_id": 57386
     },
     "4071": {
         "name_en": "Amwaj Tower",
@@ -21464,11 +21724,11 @@
         "name_en": "Montazah Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.340746,
-            24.468249
+            54.340941,
+            24.468103
         ],
         "name_ar": "\u0628\u0631\u062c \u0627\u0644\u0645\u0646\u062a\u0632\u0647",
-        "neighbourhood_id": 57395
+        "neighbourhood_id": 63615
     },
     "4081": {
         "name_en": "Park Tower",
@@ -21478,14 +21738,14 @@
         "neighbourhood_id": 57395
     },
     "4082": {
-        "name_en": "Sheikha Salama Building",
+        "name_en": "Sheikha Salama Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.339891,
-            24.467655
+            54.340056,
+            24.467341
         ],
-        "name_ar": "\u0628\u0646\u0627\u064a\u0629 \u0627\u0644\u0634\u064a\u062e\u0629 \u0633\u0644\u0627\u0645\u0629",
-        "neighbourhood_id": 57395
+        "name_ar": "\u0628\u0631\u062c \u0627\u0644\u0634\u064a\u062e\u0629 \u0633\u0644\u0627\u0645\u0629",
+        "neighbourhood_id": 63615
     },
     "4083": {
         "name_en": "The Crystal Tower",
@@ -21518,38 +21778,41 @@
         "name_en": "Dalma Residence",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.358611,
-            24.486944
+            54.358864,
+            24.486748
         ],
         "name_ar": "\u062f\u0644\u0645\u0627 \u0631\u0632\u064a\u062f\u0646\u0633",
-        "neighbourhood_id": 57395
+        "neighbourhood_id": 63613
     },
     "4090": {
         "name_en": "Emirates Tower",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
-        "name_ar": "\u0623\u0628\u0631\u0627\u062c \u0627\u0644\u0625\u0645\u0627\u0631\u0627\u062a",
-        "neighbourhood_id": 57395
+        "coords": [
+            54.370559,
+            24.495003
+        ],
+        "name_ar": "\u0628\u0631\u062c \u0627\u0644\u0625\u0645\u0627\u0631\u0627\u062a",
+        "neighbourhood_id": 63613
     },
     "4091": {
         "name_en": "Golden Falcon Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.359162,
-            24.487479
+            54.359447,
+            24.487188
         ],
-        "name_ar": "\u062c\u0648\u0644\u062f\u0646 \u0641\u0627\u0644\u0643\u0648\u0646 \u062a\u0627\u0648\u0631",
-        "neighbourhood_id": 57395
+        "name_ar": "\u0628\u0631\u062c \u0627\u0644\u0635\u0642\u0631 \u0627\u0644\u0630\u0647\u0628\u064a",
+        "neighbourhood_id": 63613
     },
     "4092": {
         "name_en": "Hamdan Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.354167,
-            24.489444
+            54.362754,
+            24.489235
         ],
         "name_ar": "\u0628\u0631\u062c \u062d\u0645\u062f\u0627\u0646",
-        "neighbourhood_id": 57395
+        "neighbourhood_id": 63613
     },
     "4093": {
         "name_en": "Liwa Centre Tower 1",
@@ -21582,14 +21845,14 @@
         "neighbourhood_id": 57395
     },
     "4096": {
-        "name_en": "Royal Tower  ",
+        "name_en": "Royal Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.371111,
-            24.488056
+            54.362063,
+            24.488698
         ],
-        "name_ar": "\u0631\u0648\u064a\u0627\u0644 \u062a\u0627\u0648\u0631",
-        "neighbourhood_id": 57395
+        "name_ar": "\u0628\u0631\u062c \u0631\u0648\u064a\u0627\u0644",
+        "neighbourhood_id": 63613
     },
     "4103": {
         "name_en": "Abu Dhabi Unversity Tower  ",
@@ -21622,11 +21885,11 @@
         "name_en": "Chain Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.370556,
-            24.477222
+            54.398399,
+            24.450574
         ],
         "name_ar": "\u0634\u064a\u0646\u0632 \u062a\u0627\u0648\u0631",
-        "neighbourhood_id": 57394
+        "neighbourhood_id": 57374
     },
     "4108": {
         "name_en": "Guardian Tower ",
@@ -21642,11 +21905,11 @@
         "name_en": "Habib Bank Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.37281,
-            24.492327
+            54.370259,
+            24.478634
         ],
         "name_ar": "\u0628\u0631\u062c \u0628\u0646\u0643 \u062d\u0628\u064a\u0628",
-        "neighbourhood_id": 57394
+        "neighbourhood_id": 63632
     },
     "4111": {
         "name_en": "Mafco Building",
@@ -23364,11 +23627,14 @@
         "neighbourhood_id": 57366
     },
     "4461": {
-        "name_en": "Morjan Tower",
+        "name_en": "Al Marjan Tower",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.375119,
+            24.482974
+        ],
         "name_ar": "\u0628\u0631\u062c \u0645\u0631\u062c\u0627\u0646",
-        "neighbourhood_id": 57389
+        "neighbourhood_id": 63614
     },
     "4465": {
         "name_en": "Al Nada",
@@ -23429,44 +23695,53 @@
     },
     "4486": {
         "name_en": "Arzana Tower",
-        "is_in_migrated_neighbourhood": false,
-        "coords": null,
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.375593,
+            24.494506
+        ],
         "name_ar": "\u0628\u0631\u062c \u0623\u0631\u0632\u0627\u0646\u0627",
-        "neighbourhood_id": 217
+        "neighbourhood_id": 62089
     },
     "4487": {
         "name_en": "Dhafir Tower",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.370117,
+            24.490714
+        ],
         "name_ar": "\u0628\u0631\u062c \u0638\u0627\u0641\u0631",
-        "neighbourhood_id": 57391
+        "neighbourhood_id": 62089
     },
     "4488": {
         "name_en": "Electra Tower",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
-        "name_ar": "\u0628\u0631\u062c \u0627\u0644\u0643\u062a\u0631\u0627",
-        "neighbourhood_id": 57368
+        "coords": [
+            54.368414,
+            24.489598
+        ],
+        "name_ar": "\u0628\u0631\u062c \u0625\u0644\u0643\u062a\u0631\u0627",
+        "neighbourhood_id": 62089
     },
     "4489": {
         "name_en": "Global Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.371598,
-            24.491524
+            54.371476,
+            24.491631
         ],
         "name_ar": "\u062c\u0644\u0648\u0628\u0627\u0644 \u062a\u0627\u0648\u0631",
-        "neighbourhood_id": 57395
+        "neighbourhood_id": 62089
     },
     "4490": {
         "name_en": "Sama Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.360617,
-            24.483398
+            54.360228,
+            24.483703
         ],
         "name_ar": "\u0628\u0631\u062c \u0633\u0645\u0627",
-        "neighbourhood_id": 57389
+        "neighbourhood_id": 62089
     },
     "4495": {
         "name_en": "Staybridge Suites",
@@ -23542,10 +23817,13 @@
     },
     "4520": {
         "name_en": "Silver Wave Tower",
-        "is_in_migrated_neighbourhood": false,
-        "coords": null,
-        "name_ar": "\u0633\u0644\u0641\u0631 \u0648\u064a\u0641 \u062a\u0627\u0648\u0631",
-        "neighbourhood_id": 217
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.375654,
+            24.505682
+        ],
+        "name_ar": "\u0628\u0631\u062c \u0633\u064a\u0644\u0641\u0631 \u0648\u064a\u0641",
+        "neighbourhood_id": 57392
     },
     "4521": {
         "name_en": "Shaab Al Askar",
@@ -23581,26 +23859,32 @@
     "4525": {
         "name_en": "Al Taghreed Tower",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.371799,
+            24.469454
+        ],
         "name_ar": "\u0628\u0631\u062c \u0627\u0644\u062a\u063a\u0631\u064a\u062f",
-        "neighbourhood_id": 57389
+        "neighbourhood_id": 62250
     },
     "4526": {
         "name_en": "Owaida Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.374186,
-            24.467404
+            54.37179,
+            24.469473
         ],
         "name_ar": "\u0628\u0631\u062c \u0639\u0648\u064a\u062f\u0629",
-        "neighbourhood_id": 57380
+        "neighbourhood_id": 62250
     },
     "4529": {
         "name_en": "3 Sails Tower",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.340173,
+            24.472363
+        ],
         "name_ar": "\u0628\u0631\u062c 3 \u0623\u0634\u0631\u0639\u0629",
-        "neighbourhood_id": 57385
+        "neighbourhood_id": 63621
     },
     "4530": {
         "name_en": "Al Diar Tower 1",
@@ -24033,21 +24317,21 @@
         "name_en": "Lilac Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.339018,
-            24.45393
+            54.409531,
+            24.50407
         ],
         "name_ar": "\u0628\u0631\u062c \u0644\u064a\u0644\u0627\u0643",
-        "neighbourhood_id": 57395
+        "neighbourhood_id": 57454
     },
     "4593": {
         "name_en": "Lime Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.500489,
-            24.321255
+            54.408226,
+            24.503295
         ],
-        "name_ar": "\u0628\u0631\u062c \u0644\u0627\u064a\u0645",
-        "neighbourhood_id": 57323
+        "name_ar": "\u0628\u0631\u062c \u0627\u0644\u0644\u064a\u0645\u0648\u0646",
+        "neighbourhood_id": 57454
     },
     "4594": {
         "name_en": "Mangrove Place",
@@ -24083,11 +24367,11 @@
         "name_en": "Marina Spirit",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.473811,
-            24.350309
+            54.404594,
+            24.496021
         ],
         "name_ar": "\u0645\u0627\u0631\u064a\u0646\u0627 \u0633\u0628\u064a\u0631\u064a\u062a",
-        "neighbourhood_id": 57350
+        "neighbourhood_id": 57457
     },
     "4600": {
         "name_en": "Ocean Pearl",
@@ -24118,17 +24402,23 @@
     },
     "4604": {
         "name_en": "Onyx Tower",
-        "is_in_migrated_neighbourhood": false,
-        "coords": null,
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.39726,
+            24.500943
+        ],
         "name_ar": "\u0627\u0648\u0646\u064a\u0643\u0633 \u062a\u0627\u0648\u0631",
-        "neighbourhood_id": 217
+        "neighbourhood_id": 57333
     },
     "4606": {
         "name_en": "Pearl Bay",
-        "is_in_migrated_neighbourhood": false,
-        "coords": null,
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.40227,
+            24.488993
+        ],
         "name_ar": "\u0628\u064a\u0631\u0644 \u0628\u0627\u064a",
-        "neighbourhood_id": 217
+        "neighbourhood_id": 57452
     },
     "10325": {
         "name_en": "Talli 41-52",
@@ -24206,11 +24496,11 @@
         "name_en": "Solitaire Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.436364,
-            24.430549
+            54.405366,
+            24.486731
         ],
         "name_ar": "\u0633\u0648\u0644\u064a\u062a\u064a\u0631 \u062a\u0627\u0648\u0631\u0632",
-        "neighbourhood_id": 57370
+        "neighbourhood_id": 57452
     },
     "4619": {
         "name_en": "Synergy Towers",
@@ -24370,10 +24660,13 @@
     },
     "4652": {
         "name_en": "Al Noor Tower",
-        "is_in_migrated_neighbourhood": false,
-        "coords": null,
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.403256,
+            24.49102
+        ],
         "name_ar": "\u0628\u0631\u062c \u0627\u0644\u0646\u0648\u0631",
-        "neighbourhood_id": 217
+        "neighbourhood_id": 57333
     },
     "4653": {
         "name_en": "Lafzaeyya Tower ",
@@ -24493,10 +24786,13 @@
     },
     "4678": {
         "name_en": "Khuzama",
-        "is_in_migrated_neighbourhood": false,
-        "coords": null,
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.53221,
+            24.420676
+        ],
         "name_ar": "\u062e\u0632\u0627\u0645\u0649",
-        "neighbourhood_id": 217
+        "neighbourhood_id": 62127
     },
     "4679": {
         "name_en": "Lailak",
@@ -24905,11 +25201,11 @@
         "name_en": "Sky Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.408631,
-            24.49613
+            54.408511,
+            24.496174
         ],
         "name_ar": "\u0633\u0643\u0627\u064a \u062a\u0627\u0648\u0631",
-        "neighbourhood_id": 57333
+        "neighbourhood_id": 57453
     },
     "4770": {
         "name_en": "Sun Tower",
@@ -24919,7 +25215,7 @@
             24.495998
         ],
         "name_ar": "\u0635\u0646 \u062a\u0627\u0648\u0631",
-        "neighbourhood_id": 57333
+        "neighbourhood_id": 57453
     },
     "4771": {
         "name_en": "Ocean Terrace",
@@ -24956,14 +25252,14 @@
         "neighbourhood_id": 57333
     },
     "4778": {
-        "name_en": "Marina Bay",
+        "name_en": "Marina Bay by Damac",
         "is_in_migrated_neighbourhood": true,
         "coords": [
             54.404089,
             24.484747
         ],
-        "name_ar": "\u0645\u0627\u0631\u064a\u0646\u0627 \u0628\u0627\u064a",
-        "neighbourhood_id": 57333
+        "name_ar": "\u0645\u0627\u0631\u064a\u0646\u0627 \u0628\u0627\u064a \u0645\u0646 \u062f\u0627\u0645\u0627\u0643",
+        "neighbourhood_id": 57452
     },
     "4779": {
         "name_en": "Al Khalidiya Tower",
@@ -24975,14 +25271,20 @@
     "4780": {
         "name_en": "Al Barza",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.601507,
+            24.450809
+        ],
         "name_ar": "\u0627\u0644\u0628\u0631\u0632\u0627",
-        "neighbourhood_id": 57318
+        "neighbourhood_id": 57411
     },
     "4781": {
-        "name_en": "Al Bandar",
+        "name_en": "Al Bandar.",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.600525,
+            24.45025
+        ],
         "name_ar": "\u0627\u0644\u0628\u0646\u062f\u0631",
         "neighbourhood_id": 57318
     },
@@ -25066,6 +25368,16 @@
         ],
         "name_ar": "\u0630\u0627 \u0632\u064a\u0646",
         "neighbourhood_id": 63
+    },
+    "10972": {
+        "name_en": "Royal M Hotel & Resort",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            54.337903,
+            24.448954
+        ],
+        "name_ar": "\u0641\u0646\u0627\u062f\u0642 \u0648\u0645\u0646\u062a\u062c\u0639\u0627\u062a \u0631\u0648\u064a\u0627\u0644 \u0625\u0645",
+        "neighbourhood_id": 57375
     },
     "4799": {
         "name_en": "Metro Central Hotel Apartments",
@@ -25269,8 +25581,8 @@
         "name_en": "Al Hassani Tower",
         "is_in_migrated_neighbourhood": false,
         "coords": [
-            55.1732,
-            25.1019
+            55.178696,
+            25.096181
         ],
         "name_ar": "",
         "neighbourhood_id": 57493
@@ -26270,14 +26582,14 @@
         "neighbourhood_id": 102
     },
     "5262": {
-        "name_en": "Abu Dhabi Gate City",
+        "name_en": "Abu Dhabi Gates City",
         "is_in_migrated_neighbourhood": true,
         "coords": [
             54.499277,
             24.395039
         ],
         "name_ar": "",
-        "neighbourhood_id": 62033
+        "neighbourhood_id": 198
     },
     "5263": {
         "name_en": "Al Bahar Residences",
@@ -27756,9 +28068,12 @@
     "5523": {
         "name_en": "Salam HQ",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.385812,
+            24.481789
+        ],
         "name_ar": "\u0633\u0644\u0627\u0645 HQ",
-        "neighbourhood_id": 57391
+        "neighbourhood_id": 62039
     },
     "5533": {
         "name_en": "Al Durrah Tower",
@@ -28486,13 +28801,13 @@
         "neighbourhood_id": 57454
     },
     "5658": {
-        "name_en": "Sky Garden",
+        "name_en": "Sky Gardens Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
             54.393969,
             24.495372
         ],
-        "name_ar": "Sky Garden",
+        "name_ar": "\u0628\u0631\u062c \u0633\u0643\u0627\u064a \u062c\u0627\u0631\u062f\u0646\u0632",
         "neighbourhood_id": 57333
     },
     "5659": {
@@ -28717,8 +29032,8 @@
             54.438028,
             24.521186
         ],
-        "name_ar": "",
-        "neighbourhood_id": 57327
+        "name_ar": "\u0633\u0648\u0647\u0648 \u0633\u0643\u0648\u064a\u0631",
+        "neighbourhood_id": 62172
     },
     "5699": {
         "name_en": "MBK Tower",
@@ -28865,9 +29180,12 @@
         "neighbourhood_id": 62775
     },
     "5729": {
-        "name_en": "Al Manara Building",
+        "name_en": "Al Manara",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.600907,
+            24.451195
+        ],
         "name_ar": "\u0627\u0644\u0645\u0646\u0627\u0631\u0629 \u0627\u0644\u0628\u0646\u0627\u0621",
         "neighbourhood_id": 57411
     },
@@ -28952,8 +29270,8 @@
         "name_en": "Al Muroor Tower",
         "is_in_migrated_neighbourhood": true,
         "coords": [
-            54.423278,
-            24.435361
+            54.423599,
+            24.436045
         ],
         "name_ar": "\u0622\u0644 \u0627\u0644\u0645\u0631\u0648\u0631 \u0628\u0631\u062c",
         "neighbourhood_id": 57374
@@ -28985,9 +29303,12 @@
     "5748": {
         "name_en": "Andalus Al Seef Resort & Spa",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.386308,
+            24.481025
+        ],
         "name_ar": "Andalus Al Seef Resort & Spa",
-        "neighbourhood_id": 57410
+        "neighbourhood_id": 62039
     },
     "5749": {
         "name_en": "Arabian Gates",
@@ -29641,14 +29962,14 @@
         "neighbourhood_id": 62218
     },
     "5885": {
-        "name_en": "C2 Marina Bay",
+        "name_en": "Marina Bay Tower 2",
         "is_in_migrated_neighbourhood": true,
         "coords": [
             54.403457,
             24.499209
         ],
-        "name_ar": "C2 Marina Bay",
-        "neighbourhood_id": 57333
+        "name_ar": "\u0628\u0631\u062c \u0645\u0627\u0631\u064a\u0646\u0627 \u0628\u0627\u064a 2",
+        "neighbourhood_id": 57457
     },
     "5886": {
         "name_en": "C3 Marina Bay",
@@ -30075,10 +30396,13 @@
         "neighbourhood_id": 127
     },
     "5954": {
-        "name_en": "Al Reef 2",
+        "name_en": "Manazel Al Reef 2",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
-        "name_ar": "\u0627\u0644\u0631\u064a\u0641 2",
+        "coords": [
+            54.77961,
+            24.678702
+        ],
+        "name_ar": "\u0645\u0646\u0627\u0632\u0644 \u0627\u0644\u0631\u064a\u0641 2",
         "neighbourhood_id": 62152
     },
     "5956": {
@@ -30273,9 +30597,12 @@
     "5988": {
         "name_en": "Waqf Sheikh Zayed Residential Building",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.348889,
+            24.474083
+        ],
         "name_ar": "Waqf Sheikh Zayed Residential Building",
-        "neighbourhood_id": 57388
+        "neighbourhood_id": 63615
     },
     "5990": {
         "name_en": "Bloom Heights",
@@ -30790,7 +31117,7 @@
         "neighbourhood_id": 61955
     },
     "6080": {
-        "name_en": "Golf Promenade",
+        "name_en": "Golf Promenad",
         "is_in_migrated_neighbourhood": true,
         "coords": [
             55.251245,
@@ -32147,7 +32474,7 @@
         "neighbourhood_id": 62348
     },
     "6275": {
-        "name_en": "The Boardwalk Residence",
+        "name_en": "The Boardwalk Residences",
         "is_in_migrated_neighbourhood": true,
         "coords": [
             54.405852,
@@ -32582,9 +32909,12 @@
     "6327": {
         "name_en": "Crystal Tower",
         "is_in_migrated_neighbourhood": true,
-        "coords": null,
+        "coords": [
+            54.369624,
+            24.494146
+        ],
         "name_ar": "\u0628\u0631\u062c \u0643\u0631\u064a\u0633\u062a\u0627\u0644",
-        "neighbourhood_id": 57390
+        "neighbourhood_id": 63613
     },
     "6329": {
         "name_en": "Al Ghurair Apartments",
@@ -36109,7 +36439,7 @@
             24.446132
         ],
         "name_ar": "\u0645\u0628\u0646\u0649 \u0627\u0644\u0627\u0645\u064a\u0631\u0629",
-        "neighbourhood_id": 57411
+        "neighbourhood_id": 57318
     },
     "6801": {
         "name_en": "Tasmeer Residence",
@@ -37729,13 +38059,13 @@
         "neighbourhood_id": 62179
     },
     "6986": {
-        "name_en": "Barsha Oasis Apartment",
+        "name_en": "Barsha Oasis",
         "is_in_migrated_neighbourhood": true,
         "coords": [
             55.190967,
             25.111179
         ],
-        "name_ar": "\u0634\u0642\u0642 \u0648\u0627\u062d\u0629 \u0627\u0644\u0628\u0631\u0634\u0627\u0621",
+        "name_ar": "\u0648\u0627\u062d\u0629 \u0627\u0644\u0628\u0631\u0634\u0627\u0621",
         "neighbourhood_id": 62179
     },
     "6987": {
@@ -39995,8 +40325,8 @@
             55.250957,
             25.01367
         ],
-        "name_ar": null,
-        "neighbourhood_id": 62044
+        "name_ar": "\u063a\u0648\u0644\u0641 \u0628\u0631\u0648\u0645\u064a\u0646\u0627\u062f 2B",
+        "neighbourhood_id": 63626
     },
     "7217": {
         "name_en": "Golf Promenade 3B",
@@ -40005,8 +40335,8 @@
             55.250707,
             25.014036
         ],
-        "name_ar": null,
-        "neighbourhood_id": 62044
+        "name_ar": "\u063a\u0648\u0644\u0641 \u0628\u0631\u0648\u0645\u064a\u0646\u0627\u062f 3B",
+        "neighbourhood_id": 63626
     },
     "7218": {
         "name_en": "Golf Promenade 4A",
@@ -40015,8 +40345,8 @@
             55.250286,
             25.014855
         ],
-        "name_ar": null,
-        "neighbourhood_id": 62044
+        "name_ar": "\u063a\u0648\u0644\u0641 \u0628\u0631\u0648\u0645\u064a\u0646\u0627\u062f 4A",
+        "neighbourhood_id": 63626
     },
     "7219": {
         "name_en": "Golf Promenade 4B",
@@ -40025,8 +40355,8 @@
             55.25011,
             25.015287
         ],
-        "name_ar": null,
-        "neighbourhood_id": 62044
+        "name_ar": "\u063a\u0648\u0644\u0641 \u0628\u0631\u0648\u0645\u064a\u0646\u0627\u062f 4B",
+        "neighbourhood_id": 63626
     },
     "7220": {
         "name_en": "Golf Promenade 5A",
@@ -40035,8 +40365,8 @@
             55.249944,
             25.015697
         ],
-        "name_ar": null,
-        "neighbourhood_id": 62044
+        "name_ar": "\u063a\u0648\u0644\u0641 \u0628\u0631\u0648\u0645\u064a\u0646\u0627\u062f 5A",
+        "neighbourhood_id": 63626
     },
     "7221": {
         "name_en": "Golf Promenade 5B",
@@ -40045,8 +40375,8 @@
             55.249769,
             25.016129
         ],
-        "name_ar": null,
-        "neighbourhood_id": 62044
+        "name_ar": "\u063a\u0648\u0644\u0641 \u0628\u0631\u0648\u0645\u064a\u0646\u0627\u062f 5B",
+        "neighbourhood_id": 63626
     },
     "7222": {
         "name_en": "Jasmin B",
@@ -40445,8 +40775,8 @@
             55.250478,
             25.014446
         ],
-        "name_ar": "",
-        "neighbourhood_id": 62044
+        "name_ar": "\u063a\u0648\u0644\u0641 \u0628\u0631\u0648\u0645\u064a\u0646\u0627\u062f 3A",
+        "neighbourhood_id": 63626
     },
     "7262": {
         "name_en": "Buiding 2 (Block-A)",
@@ -43354,6 +43684,16 @@
         ],
         "name_ar": "\u062c\u0645\u064a\u0631\u0627 \u0647\u0627\u064a\u062a\u0633 \u062a\u0627\u0648\u0631 C",
         "neighbourhood_id": 192
+    },
+    "2771": {
+        "name_en": "Skycourts Tower A",
+        "is_in_migrated_neighbourhood": true,
+        "coords": [
+            55.385412,
+            25.092207
+        ],
+        "name_ar": "\u0633\u0643\u0627\u064a \u0643\u0648\u0631\u062a\u0633 - \u0628\u0631\u062c A",
+        "neighbourhood_id": 62505
     },
     "326": {
         "name_en": "South Ridge 4",
