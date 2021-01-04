@@ -1,5 +1,10 @@
+import _debounce from 'lodash/debounce';
 import _has from 'lodash/has';
 import _isNil from 'lodash/isNil';
+
+export {
+    _debounce as debounce,
+};
 
 export function isDefined<T>(v: T) {
     return !_isNil(v);

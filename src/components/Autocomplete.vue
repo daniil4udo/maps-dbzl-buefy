@@ -9,13 +9,15 @@
             clearable
             expanded
             open-on-focus
-            :placeholder="dynamicPlaceholder"
-            :disabled="disabled"
+            :loading="isFetching"
+            :placeholder="placeholder"
+            :disabled="disabled || !isIndexMounted"
             :data="filteredData"
             :field="field"
-            @focus="dynamicPlaceholder = 'No time to explain, start typing...'"
-            @blur="dynamicPlaceholder = placeholder"
-            @select="onAutocompleteChnaged"
+            @typing="handleDebounceAutocompleteTyping"
+            @focus="$emit('focus', $event)"
+            @blur="$emit('blur', $event)"
+            @select="handleAutocompleteChange"
         >
             <template slot-scope="props">
                 <div class="media">
@@ -26,16 +28,29 @@
                     </div>
                 </div>
             </template>
+            <template slot="empty">
+                <template v-if="inputModel">
+                    <p>It's time to change your search query.</p>
+                </template>
+                <template v-else>
+                    <p>No time to explain, just start typing...</p>
+                </template>
+            </template>
         </B-Autocomplete>
     </B-Field>
 </template>
 
 <script lang="ts">
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
     import Fuse, { FuseOptionKey } from 'fuse.js/dist/fuse.basic.esm';
-    import { Component, Vue, Prop, VModel, Watch } from 'vue-property-decorator';
+    import { Component, Vue, Prop, PropSync, VModel, Watch, Emit } from 'vue-property-decorator';
 
     import { EmirateKey, IArea, IBuilding } from '@/components/models';
-    import { isDefined, has } from '@/utils/';
+    import { isDefined, has, debounce } from '@/utils/';
+
+    import { WorkerSearch } from './fuse.worker';
 
     @Component({
         name: 'Autocomplete',
@@ -52,34 +67,58 @@
 
         // TODO: makes sense to pass an array, due to no object use in here
         @Prop({ type: Object, default: () => null }) readonly data!: Record<string, T>;
-        @Prop({ type: Array, default: () => [ 'name_en', 'name_ar' ] }) readonly indexKeys!: (keyof T)[];
+        @Prop({ type: Array, default: () => [ 'name_en', 'name_ar', 'custom_format' ] }) readonly indexKeys!: string[]; // TODO: keyof T
 
+        isIndexMounted = false;
+        isFetching = false;
         inputModel = '';
-        dynamicPlaceholder = this.placeholder
+        dataIndex = null as WorkerSearch<T>;
+        filteredData = []
 
-        @VModel({ type: Object, default: () => null }) selected!: T
+        // @VModel({ type: Object, default: () => null }) selected!: T
+        @PropSync('value', { type: Object, default: () => null }) selected!: T
 
-        get dataIndex() {
-            return new Fuse(Object.values(this.data), {
-                includeScore: true,
-                keys: this.indexKeys as FuseOptionKey,
-                threshold: 0.23,
-                includeMatches: true,
+         created() {
+            this.initDataIndex().then(i => {
+                this.dataIndex = i;
+                this.isIndexMounted = true;
             });
         }
 
-        get filteredData() {
-            // if (this.inputModel.length < 1) {
-            //     return Object.values(this.data);
-            // }
-            return this.findMatch(this.inputModel);
+        async initDataIndex() {
+            try {
+                return await new WorkerSearch(this.data, { keys: this.indexKeys });
+            }
+            catch (e) {
+                console.error(`Could mount data index`, e);
+            }
+            finally {
+                await this.$nextTick();
+            }
+        }
+
+        handleDebounceAutocompleteTyping = debounce(this.handleAutocompleteTyping.bind(this), 250)
+
+        async handleAutocompleteTyping(str: string) {
+            try {
+                this.isFetching = true;
+                this.filteredData = await this.dataIndex.find(str);
+            }
+            catch (e) {
+                console.error(`Couldn't perform search.`, e);
+            }
+            finally {
+                this.isFetching = false;
+                await this.$nextTick();
+            }
         }
 
         /**
          * Separation of concerns
          * We need it because this method is in the @select event
          */
-        onAutocompleteChnaged(s: T) {
+        @Emit('changed')
+        handleAutocompleteChange(s: T) {
             this.selected = s;
         }
 
@@ -88,35 +127,6 @@
         onSelectedChanged(newV: T) {
             if (isDefined(this.selected) && this.inputModel !== this.selected[this.field]) {
                 this.inputModel = this.selected[this.field];
-            }
-
-            this.$emit('autocomplete-changed', newV);
-        }
-
-        findMatch(str: string) {
-            try {
-                if (typeof str === 'string') {
-                    return this.dataIndex
-                        .search(str)
-                        .map(e => e.item);
-                }
-
-                console.error(`[Autocomplete]: Search string has to be type 'string'. Got ${typeof str}`);
-            }
-            catch {
-                // If Fuse fails, perform regulat search
-                const filteredData = [];
-
-                for (const value in this.data) {
-                    if (has(this.data, value)) {
-                        if (String(this.data[value]?.name_en).toLowerCase().includes(str.toLowerCase())) {
-                            // IMPORTANT: assignig it to item prop: mocking Fuse API
-                            filteredData.push({ ...this.data[value], value });
-                        }
-                    }
-                }
-
-                return filteredData;
             }
         }
     }
