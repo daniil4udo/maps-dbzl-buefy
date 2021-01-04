@@ -47,6 +47,8 @@
     import { isDefined, has, isLocalStorageAccessSafe } from '@/utils/';
 
     import { IEmirate, IArea, Areas, IBuilding, Buildings, IPolygon, ILatLng } from './models';
+
+    // TODO: cleanup
     // Events names
     const idNeighbourhood = 'id_neighbourhood';
     const idBuilding = 'id_building';
@@ -57,8 +59,8 @@
 
     const ZOOM_INCREMENT = 2;
     const ZOOM_EMIRATE = 1;
-    const ZOOM_AREA = 2;
-    const ZOOM_BUILDING = 3;
+    const ZOOM_AREA = 3;
+    const ZOOM_BUILDING = 5;
 
     @Component({
         name: 'Map',
@@ -96,7 +98,7 @@
             scrollwheel: false,
             mapTypeControl: false,
             streetViewControl: false,
-            zoomControl: !0,
+            zoomControl: true,
             fullscreenControl: false,
             zoomControlOptions: {
                 style: this.google.maps.ZoomControlStyle.LARGE,
@@ -373,7 +375,7 @@
 
             if (this.googleMap instanceof HTMLDivElement) {
                 this.mapInstance = new this.google.maps.Map(this.googleMap, this.mapOptions);
-                this.mapInstance.controls[this.google.maps.ControlPosition.RIGHT_CENTER].push(this.tooltip);
+                this.mapInstance.controls[this.google.maps.ControlPosition.CENTER].push(this.tooltip);
             }
         }
 
@@ -700,10 +702,10 @@
             position: absolute;
             top: calc(50%);
             left: 50%;
-            // width: 25px;
+            width: 25px;
             height: 35px;
-            content: '📍';
-            // background-image: url('http://maps.gstatic.com/mapfiles/markers2/marker.png');
+            content: ' ';
+            background-image: url('http://maps.gstatic.com/mapfiles/markers2/marker.png');
             background-size: cover;
             transform: translate(-50%, -50%);
         }

@@ -15,26 +15,26 @@
         <!-- {{ area }} -->
         <Autocomplete
             v-if="emirate"
-            v-model="area"
+            :value.sync="area"
             field="name_en"
             label="Chose Area"
             :placeholder="areaExample"
             :disabled="building != null"
             :emirate="emirate"
             :data="emirateAreas"
-            @input="option => onAutocompleteInput(option, 'area')"
+            @changed="option => onAutocompleteInput(option, 'area')"
         />
 
         <!-- {{ building }} -->
         <Autocomplete
             v-if="emirate"
-            v-model="building"
+            :value.sync="building"
             field="name_en"
             label="Chose Building"
             placeholder="Meera Tower"
             :emirate="emirate"
             :data="AE_Buildings"
-            @input="option => onAutocompleteInput(option, 'building')"
+            @changed="option => onAutocompleteInput(option, 'building')"
         />
 
         {{ coords.lat }},{{ coords.lng }}
@@ -132,10 +132,12 @@
 
         // TEST METHODS
         setNewCoords() {
-                this.coords.lat = 25.510498;
-                this.coords.lng = 55.57039;
+                // this.coords.lat = 25.510498;
+                // this.coords.lng = 55.57039;
 
-                // this.building = { name_en: 'Meera Tower', is_in_migrated_neighbourhood: true, coords: [ 55.255582, 25.183397 ], name_ar: 'برج ميره', neighbourhood_id: 62229, value: 6424, custom_format: 'Al Habtoor City, Business Bay, Dubai, AE' };
+                this.building = { name_en: 'Meera Tower', is_in_migrated_neighbourhood: true, coords: [ 55.255582, 25.183397 ], name_ar: 'برج ميره', neighbourhood_id: 62229, value: 6424, custom_format: 'Al Habtoor City, Business Bay, Dubai, AE' };
+
+                // decode
         }
 
         // Methods
