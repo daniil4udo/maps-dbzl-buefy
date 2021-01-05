@@ -1,22 +1,36 @@
 <template functional>
     <div
-        id="dbz-map-tooltip"
+        id="dmc-map-tooltip"
         ref="tooltip"
         :class="[
-            'dbz-map__tooltip',
+            'dmc-map__tooltip b-tooltip is-light is-top is-large is-always',
             props.tooltipClasses
         ]"
     >
-        <span
-            id="dbz-map-tooltip-text"
-            ref="tooltipText"
+        <div
             :class="[
-                'dbz-map__tooltip-text',
+                'dmc-map__tooltip-content tooltip-content',
                 props.tooltipTextClasses
             ]"
-            v-text="props.label || 'Finding your location...'"
-        />
-        <span id="dbz-map-pin" class="dbz-map__tooltip-pin" />
+        >
+            <template v-if="props.label">
+                <span class="dmc-map__tooltip-text" v-text="props.label" />
+            </template>
+            <template v-else>
+                <img
+                    svg-inline
+                    class="dmc-map__tooltip-loader"
+                    src="../assets/loader.svg"
+                    width="20"
+                >
+                <span
+                    ref="tooltipText"
+                    class="dmc-map__tooltip-text"
+                    v-text="'Finding your location...'"
+                />
+            </template>
+        </div>
+        <span id="dmc-map-pin" class="dmc-map__pin" />
     </div>
 </template>
 
@@ -27,129 +41,98 @@
 </script>
 
 <style scoped lang="scss">
-.dbz-map {
-    @media (min-width: 35.5em){
-        &__canvas-wrapper{
-            position:fixed;
-            top:0;
-            left:0;
-            z-index:100;
-            border-bottom:1px solid #a8a8a8;
+.dmc-map {
+    strong {
+        display: inline-block;
+        margin-right: 5px;
+        font-style: italic;
+        color: #ca2128;
+    }
+
+    // TODO: add animation
+    &.animate-shake {
+        animation: shake .5s both;
+    }
+
+    &__tooltip {
+        position: absolute;
+        top: calc(50% + 7px) !important;
+        left: 50% !important;
+        -js-display: flex;
+        display: -ms-flexbox;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        text-align: center;
+        pointer-events: none;
+        user-select: none;
+        opacity: 1;
+        transition: opacity .3s ease-in-out;
+        transform: translate(-50%, -53px);
+        flex-pack: center;
+        flex-align: center;
+
+        &.dragging,
+        &.hidden {
+            opacity: 0;
         }
     }
 
-    &__canvas{
-        position:relative;
-        width:100%;
-        height:200px;
-        background:url(/images/paa/dummy_map_2.jpg) center center no-repeat;
-        border-radius:8px;
+    &__tooltip-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
-    &__tooltip{
-        position: absolute;
-        top: 40px;
-        left: 50%;
-        // width: 8px;
-        // height: 8px;
-        // border: 8px solid #ffffff;
-        // border-radius: 50%;
-
-        // &.dragging,
-        // &.hidden{
-        //     opacity:0;
-        // }
-
-        // &::after {
-        //     position: absolute;
-        //     bottom: -30px;
-        //     left: -6px;
-        //     width: 0;
-        //     height: 0;
-        //     content: '';
-        //     border: 10px solid transparent;
-        //     border-top: 17px solid #ffffff;
-        // }
+    &__tooltip-text {
+        font-size: 14px !important;
+        font-weight: 700;
+        color: #18a57e;
+        text-align: left;
+        text-shadow: -1px -1px 0 rgba(255, 255, 255, 0.5), 0 -1px 0 rgba(255, 255, 255, 0.5), 1px -1px 0 rgba(255, 255, 255, 0.5), 1px 0 0 rgba(255, 255, 255, 0.5), 1px 1px 0 rgba(255, 255, 255, 0.5), 0 1px 0 rgba(255, 255, 255, 0.5), (-1px) 1px 0 rgba(255, 255, 255, 0.5), (-1px) 0 0 rgba(255, 255, 255, 0.5);
+        white-space: nowrap;
+        transition-duration: .2s;
+        transition-property: all;
+        -moz-osx-font-smoothing: grayscale;
+        font-smoothing: antialiased;
     }
 
-    &__tooltip-text{
-        font-size:14px !important;
-        font-weight:700;
-        color:#2153b0;
-        text-align:left;
-        text-shadow:-1px -1px 0 rgba(255,255,255,.5),0 -1px 0 rgba(255,255,255,.5),1px -1px 0 rgba(255,255,255,.5),1px 0 0 rgba(255,255,255,.5),1px 1px 0 rgba(255,255,255,.5),0 1px 0 rgba(255,255,255,.5),-1px 1px 0 rgba(255,255,255,.5),-1px 0 0 rgba(255,255,255,.5);
-        white-space:nowrap;
-        transition-duration:.2s;
-        transition-property:all;
-        -webkit-font-smoothing:antialiased;
-        font-smoothing:antialiased;
+    &__tooltip-loader {
+        margin-right: 5px;
     }
 
-    // &__tooltip-pin{
-    //     position:relative;
-    //     box-sizing: border-box;
-    //     display:block;
-    //     width:24px;
-    //     height:24px;
-    //     text-align:center;
-    //     border:8px solid #e00000;
-    //     border-radius:50%;
-    //     animation:bounce both 1s;
+    &__pin {
+        position: relative;
+        display: block;
+        width: 24px;
+        height: 24px;
+        text-align: center;
+        border: 8px solid #18a57e;
+        border-radius: 50%;
+        box-shadow: inset 20px 20px 60px #d9d9d9, inset -20px -20px 60px #ffffff;
+        // animation: bounce both 1s;
 
-    //     &::after{
-    //         position:absolute;
-    //         bottom:-30px;
-    //         left:-6px;
-    //         width:0;
-    //         height:0;
-    //         content:'';
-    //         border:10px solid transparent;
-    //         border-top:17px solid #e00000;
-    //     }
-    // }
-
-    &__heading{
-        margin:1.875em 0;
-        font-size:1.625em;
-        font-weight:400;
-        line-height:1.38462em;
-    }
-}
-
-@keyframes attention-seeker{
-    0%,
-    100%{
-        background-color:#ffffff;
+        &::after {
+            position: absolute;
+            bottom: -30px;
+            left: -6px;
+            width: 0;
+            height: 0;
+            content: '';
+            border: 10px solid transparent;
+            border-top: 17px solid #18a57e;
+        }
     }
 
-    50%{
-        background-color:rgba(0,162,100,.4);
-    }
-}
-
-@keyframes anim-spin{
-    0%{
-        transform:rotate(0);
+    &__heading {
+        margin: 1.875em 0;
+        font-size: 1.625em;
+        font-weight: 400;
+        line-height: 1.38462em;
     }
 
-    100%{
-        transform:rotate(360deg);
-    }
-}
-
-.anim-spin{
-    color:#a8a8a8 !important;
-    transition-duration:color;
-    transition-property:all;
-    animation:anim-spin 1s infinite alternate ease-in-out both;
-}
-
-.dbz-animate-fade-in{
-    animation:fade-in .3s both ease;
-}
-
-.dbz-animate-shake{
-    animation:shake .5s both;
 }
 
 @keyframes shake{
@@ -171,16 +154,6 @@
     60%,
     80%{
         transform:translateX(10px);
-    }
-}
-
-@keyframes fade-in{
-    from{
-        opacity:0;
-    }
-
-    to{
-        opacity:1;
     }
 }
 

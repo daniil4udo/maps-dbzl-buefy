@@ -1,22 +1,22 @@
 <template>
     <div
-        id="dbz-map-wrapper"
-        ref="dbzMapWrapper"
-        class="dbz-map"
+        id="dmc-map-wrapper"
+        ref="dmcMapWrapper"
+        class="dmc-map"
     >
-        <div class="dbz-map__body">
+        <div class="dmc-map__body">
             <p class="flame-text flame-text--title5">
                 Is the pin in the right location?
-                {{ tooltip }}
             </p>
             <p class="flame-text flame-text--medium">
                 Click and drag the pin to the exact spot. Users are more likely to
                 respond to ads that are correctly shown on the map
             </p>
+
             <div
-                id="dbz-map-canvas"
+                id="dmc-map-canvas"
                 ref="googleMap"
-                class="dbz-map__canvas"
+                class="dmc-map__canvas"
                 style="position: relative; overflow: hidden; background-color: gray;"
             >
                 <template v-if="google && mapInstance">
@@ -28,7 +28,8 @@
 
                 <Tooltip
                     v-show="tooltipText"
-                    :class="{ hidden: !isVisibleTooltip }"
+                    :class="{ hidden: !isVisibleTooltip, }"
+                    :tooltip-classes="{ 'outside-polygons': !foundAreaPoint, }"
                     :label="tooltipText"
                 />
             </div>
@@ -52,10 +53,10 @@
     // Events names
     const idNeighbourhood = 'id_neighbourhood';
     const idBuilding = 'id_building';
-    const dbzMapAutocomplete = 'dbz.map.autocomplete';
-    // const dbzMapChange = 'dbz.map.change';
-    // const dbzMapClose = 'dbz.map.close';
-    // const dbzMapError = 'dbz.map.error';
+    const dmcMapAutocomplete = 'dmc.map.autocomplete';
+    // const dmcMapChange = 'dmc.map.change';
+    // const dmcMapClose = 'dmc.map.close';
+    // const dmcMapError = 'dmc.map.error';
 
     const ZOOM_INCREMENT = 2;
     const ZOOM_EMIRATE = 1;
@@ -259,16 +260,16 @@
             shortAnim: 400,
             mediumAnim: 600,
             longAnim: 1e3,
-        } as google.maps.MapOptions
+        } as google.maps.MapOptions;
 
         // areaPolygonInstances: null,
         polygonOptions = {
-            fillColor: '#2153b0',
+            fillColor: '#18A57E',
             fillOpacity: 0.2,
-            strokeColor: '#193f85',
+            strokeColor: '#18A57E',
             strokeOpacity: 0.8,
-            strokeWeight: 1,
-        }
+            strokeWeight: 1.5,
+        };
 
         //
         latLngInstance = null as google.maps.LatLng
@@ -280,6 +281,7 @@
         tooltipText = ''
         messages = {
             loading: '🔍 Finding your location...',
+            drop: '🔍 Drop your pin...',
             water: '🤿 Are you scuba diving?',
             land: '🐪 Lost in the desert?',
             generic: '🧭 Do you need a GPS, dude?',
@@ -375,13 +377,13 @@
 
             if (this.googleMap instanceof HTMLDivElement) {
                 this.mapInstance = new this.google.maps.Map(this.googleMap, this.mapOptions);
-                this.mapInstance.controls[this.google.maps.ControlPosition.CENTER].push(this.tooltip);
+                this.mapInstance.controls[this.google.maps.ControlPosition.TOP_CENTER].push(this.tooltip);
             }
         }
 
         addEventListeners() {
-            // document.addEventListener('dbz.autocomplete.change', this.handleAutocompleteChange.bind(this));
-            // document.addEventListener('dbz.neighborhood.change', this.handleNeighborhoodChange.bind(this));
+            // document.addEventListener('dmc.autocomplete.change', this.handleAutocompleteChange.bind(this));
+            // document.addEventListener('dmc.neighborhood.change', this.handleNeighborhoodChange.bind(this));
 
             this.google.maps.event.addListenerOnce(this.mapInstance, 'tilesloaded', () => {
                 this.handleGoogleMapTilesLoaded.call(this);
@@ -391,6 +393,9 @@
                 this.google.maps.event.addListener(this.mapInstance, 'idle', this.handleGoogleMapIdle.bind(this));
                 this.google.maps.event.addListener(this.mapInstance, 'click', this.handleGoogleMapClick.bind(this));
             });
+
+            // Just emmit for the res of GMap events
+            [ 'bounds_changed', 'dblclick', 'drag', 'mousemove', 'mouseout', 'mouseover', 'resize', 'rightclick' ].forEach(this.handleGoogleMapListners.bind(this));
         }
 
         // Polygon handlers
@@ -550,7 +555,7 @@
 
             if (this.foundAreaPoint) {
                 this.setMapPolygon(this.foundAreaPoint);
-                this.setTooltipText(this.foundAreaPoint.name);
+                this.setTooltipText(`📍 ${this.foundAreaPoint.name}`);
             }
             else {
                 // Remove Polygon if couldn find the location
@@ -584,7 +589,7 @@
             }
             this.handleNeighborhoodChange(eventPayload);
 
-            const customEventAutocomplete = new CustomEvent(dbzMapAutocomplete, {
+            const customEventAutocomplete = new CustomEvent(dmcMapAutocomplete, {
                 detail: {
                     id: idNeighbourhood,
                     name: (this.foundAreaPoint || {}).name,
@@ -604,6 +609,11 @@
         handleAreaChange(newArea: IPolygon<IArea>) {}
 
         // GMaps event hadlers
+
+        handleGoogleMapListners(e) {
+            this.google.maps.event.addListener(this.mapInstance, e, (...args) => this.$nextTick(() => this.$emit(e, ...args)));
+        }
+
         @Emit('tilesloaded')
         handleGoogleMapTilesLoaded() {
             // TODO: set some maps styles
@@ -625,9 +635,9 @@
         @Emit('dragstart')
         handleGoogleMapDragStart() {
             const mapCenter = this.mapInstance.getCenter();
-            // querySelectorPin.classList.remove('dbz-animate-shake');
+            // querySelectorPin.classList.remove('dmc-animate-shake');
             // querySelectorPin.classList.remove('outside-polygons');
-            this.setTooltipText(this.messages.loading);
+            this.setTooltipText(this.messages.drop);
 
             return mapCenter;
         }
@@ -681,33 +691,35 @@
 </script>
 
 <style lang="scss" scoped>
-    @media (min-width: 35.5em) {
-        .dbz-map__canvas-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-            border-bottom:1px solid #a8a8a8;
+    .dmc-map{
+        &__canvas {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: url('https://dbzstatic-a.akamaihd.net/images/paa/dummy_map_2.jpg') center center no-repeat;
+            border-radius: 8px;
+
+            // &::after {
+            //     position: absolute;
+            //     top: calc(50% - 17px);
+            //     left: 50%;
+            //     width: 25px;
+            //     height: 35px;
+            //     content: ' ';
+            //     background-image: url('http://maps.gstatic.com/mapfiles/markers2/marker.png');
+            //     background-size: cover;
+            //     transform: translate(-50%, -50%);
+            // }
         }
-    }
 
-    .dbz-map__canvas {
-        position: relative;
-        width: 100%;
-        height: 500px;
-        background: url('https://dbzstatic-a.akamaihd.net/images/paa/dummy_map_2.jpg') center center no-repeat;
-        border-radius: 8px;
-
-        &::after {
-            position: absolute;
-            top: calc(50%);
-            left: 50%;
-            width: 25px;
-            height: 35px;
-            content: ' ';
-            background-image: url('http://maps.gstatic.com/mapfiles/markers2/marker.png');
-            background-size: cover;
-            transform: translate(-50%, -50%);
+        @media (min-width: 35.5em) {
+            &__canvas-wrapper {
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 100;
+                border-bottom:1px solid #a8a8a8;
+            }
         }
     }
 </style>
