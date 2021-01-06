@@ -20,6 +20,7 @@
             @select="handleAutocompleteChange"
         >
             <template slot-scope="props">
+                <div v-if="isFetching" class="media" />
                 <div class="media">
                     <div class="media-content">
                         <strong>{{ props.option[field] }}</strong>
@@ -29,7 +30,7 @@
                 </div>
             </template>
             <template slot="empty">
-                <template v-if="inputModel">
+                <template v-if="inputModel && !isFetching">
                     <p>It's time to change your search query.</p>
                 </template>
                 <template v-else>
@@ -41,14 +42,13 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+    // /* eslint-disable no-unused-vars */
+    // /* eslint-disable @typescript-eslint/no-unused-vars */
 
-    import Fuse, { FuseOptionKey } from 'fuse.js/dist/fuse.basic.esm';
-    import { Component, Vue, Prop, PropSync, VModel, Watch, Emit } from 'vue-property-decorator';
+    import { Component, Vue, Prop, PropSync, Watch, Emit } from 'vue-property-decorator';
 
     import { EmirateKey, IArea, IBuilding } from '@/components/models';
-    import { isDefined, has, debounce } from '@/utils/';
+    import { isDefined, debounce } from '@/utils/';
 
     import { WorkerSearch } from './search.worker';
 
@@ -97,7 +97,7 @@
             }
         }
 
-        handleDebounceAutocompleteTyping = debounce(this.handleAutocompleteTyping.bind(this), 250)
+        handleDebounceAutocompleteTyping = debounce(this.handleAutocompleteTyping.bind(this), 150)
 
         async handleAutocompleteTyping(str: string) {
             try {
