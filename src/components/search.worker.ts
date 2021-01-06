@@ -24,6 +24,8 @@ export class WorkerSearch<T extends object> {
         }
         catch {
             // If Fuse fails, perform regulat search
+            console.warn('⚠️ Fallback to regualar search');
+
             return this.matchSearch(s);
         }
     }
